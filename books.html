@@ -4,458 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bookshelf</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 20px;
-        }
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 20px;
-        }
-        .book {
-            position: relative;
-            overflow: hidden;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        .book img {
-            width: 100%;
-            height: auto;
-            display: block;
-            object-fit: cover;
-        }
-        .book-info {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 10px;
-            text-align: center;
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
-        }
-        .book:hover .book-info {
-            transform: translateY(0);
-        }
-
-        /* Responsive Styles */
-        @media (max-width: 768px) {
-            .gallery {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            }
-            .book-info {
-                padding: 8px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .gallery {
-                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            }
-            .book-info {
-                padding: 6px;
-                font-size: 0.9em;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="assets/css/book.css"/>
 </head>
 <body>
     <h1>BookShelf</h1>
     <h4><i>Readings I’ve appreciated.</i></h4>
-    <!-- Gallery End -->
-    <div class="gallery">
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1347654509i/91950.jpg" alt="Myth of Sisyphus">
-            <div class="book-info">
-                <h2>The Myth of Sisyphus</h2>
-                <p>Albert Camus</p>
-            </div>
-        </div>
-                <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1388287904i/19351.jpg" alt="The Epic of Gilgamesh">
-            <div class="book-info">
-                <h2>The Epic of Gilgamesh</h2>
-                <p>-</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1657540227i/6656.jpg" alt="The Divine Comedy">
-            <div class="book-info">
-                <h2>The Divine Comedy</h2>
-                <p>Dante Alighieri</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1658184791i/61605332.jpg" alt="Time and Free Will">
-            <div class="book-info">
-                <h2>Faust I & II</h2>
-                <p>Johann Wolfgang von Goethe</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1704107508i/504363.jpg" alt="Pale Fire">
-            <div class="book-info">
-                <h2>Pale Fire</h2>
-                <p>Vladimir Nabokov</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1320399438i/17690.jpg" alt="The trial">
-            <div class="book-info">
-                <h2>The Trial</h2>
-                <p>Franz Kafka</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1546112331i/3836.jpg" alt="Don Quixote">
-            <div class="book-info">
-                <h2>Don Quixote</h2>
-                <p>Miguel de Cervantes Saavedra</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1345060082i/19380.jpg" alt="Candide">
-            <div class="book-info">
-                <h2>Candide</h2>
-                <p>Voltaire</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1575509280i/5129.jpg" alt="Brave new world">
-            <div class="book-info">
-                <h2>Brave New World</h2>
-                <p>Aldous Huxley</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1546103428i/5297.jpg" alt="The Picture of Dorian Gray">
-            <div class="book-info">
-                <h2>The Picture of Dorian Gray</h2>
-                <p>Oscar Wilde</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1320533763i/304752.jpg" alt="The Sirens of Titan">
-            <div class="book-info">
-                <h2>The Sirens of Titan</h2>
-                <p>Kurt Vonnegut</p>
-            </div>
-        </div>
-         <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1526070678i/15997.jpg" alt="Paradise Lost">
-            <div class="book-info">
-                <h2>Paradise Lost</h2>
-                <p>John Milton</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1348276175i/90266.jpg" alt="The Bandini Quartet">
-            <div class="book-info">
-                <h2>The Bandini Quartet</h2>
-                <p>John Fante</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1713542603i/11297.jpg" alt="Norwegian Wood">
-            <div class="book-info">
-                <h2>Norwegian Wood</h2>
-                <p>Haruki Murakami</p>
-            </div>
-        </div>
-         <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1657562670i/49455.jpg" alt="Notes from the Underground">
-            <div class="book-info">
-                <h2>Notes From the Underground</h2>
-                <p>Fyodor Dostoevsky</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1328984802i/143992.jpg" alt="A Happy Death">
-            <div class="book-info">
-                <h2>A Happy Death</h2>
-                <p>Albert Camus</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1421618636i/30659.jpg" alt="Meditations">
-            <div class="book-info">
-                <h2>Meditations</h2>
-                <p>Marcus Aurelius</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1535419394i/4069.jpg" alt="Mans search for meaning">
-            <div class="book-info">
-                <h2>Man's Search For Meaning</h2>
-                <p>Viktor E. Frankl</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1536549010i/41753650.jpg" alt="The Beauty of Everyday Things">
-            <div class="book-info">
-                <h2>The Beauty of Everyday Things</h2>
-                <p>Soetsu Yanagi</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1328865431i/6639541.jpg" alt="An Introduction to Social Psychology">
-            <div class="book-info">
-                <h2>An Introduction to Social Psychology</h2>
-                <p>William McDougall</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1370634866i/147521.jpg" alt="Study of language">
-            <div class="book-info">
-                <h2>The Study of Language</h2>
-                <p>George Yule</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1610935574i/246422.jpg" alt="The Gulag Archipelago">
-            <div class="book-info">
-                <h2>The Gulag Archipelago</h2>
-                <p>Aleksandr Solzhenitsyn</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1611492271i/56801359.jpg" alt="Albert Einstein's Philosophical Views and the Theory of Relativity">
-            <div class="book-info">
-                <h2>Albert Einstein's Philosophical Views and the Theory of Relativity</h2>
-                <p>D.P. Gribanov</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1327249213i/12356699.jpg" alt="Brief History of time">
-            <div class="book-info">
-                <h2>A Brief History of Time: From the Big Bang to Black Holes</h2>
-                <p>Stephen Hawking</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://archive.org/services/img/v.-ilyin-a.-kalinkin-the-nature-of-science-progress-1988/full/pct:200/0/default.jpg" alt="The Nature Of Science">
-            <div class="book-info">
-                <h2>The Nature Of Science</h2>
-                <p>V. Ilyin; A. Kalinkin </p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://m.media-amazon.com/images/I/81XnrwZKl5L._SL1500_.jpg" alt="Modernization the dynamics of Growth">
-            <div class="book-info">
-                <h2>Modernization the dynamics of Growth</h2>
-                <p>Myron Weiner</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1523543570i/34684622.jpg" alt="Leonardo da Vinci">
-            <div class="book-info">
-                <h2>Leonardo da Vinci</h2>
-                <p>Walter Isaacson</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1387706580i/889249.jpg" alt="The Man Who Invented the Twentieth Century">
-            <div class="book-info">
-                <h2>The Man Who Invented the Twentieth Century</h2>
-                <p>Robert Lomas</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1504936953i/35167685.jpg" alt="Surely Your Joking, Mr. Feynman!">
-            <div class="book-info">
-                <h2>"Surely You're Joking, Mr. Feynman!"</h2>
-                <p>Richard P. Feynman</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1453215833i/1842.jpg" alt="Guns, Germs, and Steel: The Fates of Human Societies">
-            <div class="book-info">
-                <h2>Guns, Germs, and Steel</h2>
-                <p>Jared Diamond</p>
-            </div>
-        </div>
-         <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1696678325i/195069995.jpg" alt="Psychology and the Occult">
-            <div class="book-info">
-                <h2>Psychology and the Occult</h2>
-                <p>C.G. Jung</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://www.anticariat-unu.ro/uploads/products/mikhail-lomonosov-life-and-work-by-galina-pavlova-and-alexander-fyodorov-1984-p313246-0.JPG" alt="MIKHAIL LOMONOSOV">
-            <div class="book-info">
-                <h2>MIKHAIL LOMONOSOV</h2>
-                <p>GALINA PAVLOVA and ALEXANDER FYODOROV</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://m.media-amazon.com/images/I/6150bIphneL._AC_UF1000,1000_QL80_.jpg" alt="Being and Time">
-            <div class="book-info">
-                <h2>Being and Time</h2>
-                <p>Martin Heidegger</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1721198711i/85326.jpg" alt="Of Grammatology">
-            <div class="book-info">
-                <h2>Of Grammatology</h2>
-                <p>Jacques Derrida</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1309286516i/24965.jpg" alt="Fear and Trembling">
-            <div class="book-info">
-                <h2>Fear and Trembling</h2>
-                <p>Søren Kierkegaard</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1704216887i/205218.jpg" alt="Ethics">
-            <div class="book-info">
-                <h2>Ethics</h2>
-                <p>Baruch Spinoza</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1386925655i/30289.jpg" alt="The Republic">
-            <div class="book-info">
-                <h2>The Republic</h2>
-                <p>Plato</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1714705703i/51715.jpg" alt="Mythologies">
-            <div class="book-info">
-                <h2>Mythologies</h2>
-                <p>Roland Barthes</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1598544928i/25955.jpg" alt="The Medium is the Massage">
-            <div class="book-info">
-                <h2>The Medium is the Massage</h2>
-                <p>Marshall McLuhan</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1475878710i/32496468.jpg" alt="Confabulations">
-            <div class="book-info">
-                <h2>Confabulation</h2>
-                <p>John Berger</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images.booksense.com/images/447/960/9781539960447.jpg" alt="The Interpretation of dreams">
-            <div class="book-info">
-                <h2>The Interpretation of Dreams</h2>
-                <p>Sigmund Freud</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1436152896i/52374.jpg" alt="Against Interpretation and Other Essays">
-            <div class="book-info">
-                <h2>Against Interpretation and Other Essays</h2>
-                <p>Susan Sontag</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1388554747i/51933.jpg" alt="Madness and Civilization: A History of Insanity in the Age of Reason">
-            <div class="book-info">
-                <h2>Madness and Civilization: A History of Insanity in the Age of Reason</h2>
-                <p>Michel Foucault</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1348198131i/2474084.jpg" alt="The Work of Art in the Age of Its Technological Reproducibility">
-            <div class="book-info">
-                <h2>The Work of Art in the Age of Its Technological Reproducibility</h2>
-                <p>Walter Benjamin</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1397692337i/201385.jpg" alt="The Culture Industry">
-            <div class="book-info">
-                <h2>The Culture Industry</h2>
-                <p>Theodor W. Adorno</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://m.media-amazon.com/images/I/71JFv5wkHoL._AC_UF1000,1000_QL80_.jpg" alt="The Culture Industry">
-            <div class="book-info">
-                <h2>The Burnout Society</h2>
-                <p>Byung-Chul Han</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1421619214i/97411.jpg" alt="letters from a stoic">
-            <div class="book-info">
-                <h2>Letters From a stoic</h2>
-                <p>Seneca</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://d28hgpri8am2if.cloudfront.net/book_images/onix/cvr9781982105457/being-and-nothingness-9781982105457_hr.jpg" alt="Being and Nothingness">
-            <div class="book-info">
-                <h2>Being and Nothingness</h2>
-                <p>Satre</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://m.media-amazon.com/images/I/61T910RiieL._AC_UF1000,1000_QL80_.jpg" alt="Variety of Men">
-            <div class="book-info">
-                <h2>Variety of Men</h2>
-                <p>C.P. Snow</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1437980703i/18007965.jpg" alt="የተቆለፈበት ቁልፍ">
-            <div class="book-info">
-                <h2>የተቆለፈበት ቁልፍ</h2>
-                <p>ምህረት ደበበ</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1438326322i/26013197.jpg" alt="ሌላሠው">
-            <div class="book-info">
-                <h2>ሌላሠው</h2>
-                <p>ምህረት ደበበ</p>
-            </div>
-        </div>
-          <div class="book">
-            <img src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1455008375l/2400872.jpg" alt="ኦሮማይ">
-            <div class="book-info">
-                <h2>ኦሮማይ</h2>
-                <p>በዓሉ ግርማ</p>
-            </div>
-        </div>
-          <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1488973102i/34510976.jpg" alt="አለመኖር">
-            <div class="book-info">
-                <h2>አለመኖር</h2>
-                <p>ዳዊት ወንድምአገኝ</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1440330366i/26150198.jpg" alt="የልምዣት">
-            <div class="book-info">
-                <h2>የልምዣት</h2>
-                <p>ሀዲስ ዓለማየሁ</p>
-            </div>
-        </div>
-        <div class="book">
-            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1328866275i/907548.jpg" alt="Time and Free Will">
-            <div class="book-info">
-                <h2>Time and Free Will</h2>
-                <p>Henri Bergson</p>
-            </div>
-        </div>
-        <!-- Gallery End -->
+    <!-- Filter Buttons -->
+    <div class="filter-buttons">
+        <button class="filter-button active" data-filter="all">All</button>
+        <button class="filter-button" data-filter="fiction">Fiction</button>
+        <button class="filter-button" data-filter="non-fiction">Non-Fiction</button>
     </div>
+    <!-- Gallery -->
+    <div class="gallery" id="book-gallery">
+        <!-- Books -->
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        async function fetchBooks() {
+            try {
+                const response = await fetch('books.json');
+                const books = await response.json();
+                const gallery = document.getElementById('book-gallery');
+
+                books.forEach(book => {
+                    const bookDiv = document.createElement('div');
+                    bookDiv.classList.add('book');
+                    bookDiv.setAttribute('data-category', book.category);
+
+                    bookDiv.innerHTML = `
+                        <img src="${book.image}" alt="${book.title}">
+                        <div class="book-info">
+                            <h2>${book.title}</h2>
+                            <p>${book.author}</p>
+                        </div>
+                    `;
+                    gallery.appendChild(bookDiv);
+                });
+            } catch (error) {
+                console.error('Error fetching books:', error);
+            }
+        }
+
+        
+        window.onload = fetchBooks;
+
+        // Filter 
+        document.querySelectorAll('.filter-button').forEach(button => {
+            button.addEventListener('click', function() {
+                document.querySelectorAll('.filter-button').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filter = this.getAttribute('data-filter');
+                document.querySelectorAll('.book').forEach(book => {
+                    if (filter === 'all' || book.getAttribute('data-category') === filter) {
+                        book.style.display = '';
+                    } else {
+                        book.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

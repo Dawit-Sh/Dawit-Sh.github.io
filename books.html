@@ -9,12 +9,18 @@
 <body>
     <h1>BookShelf</h1>
     <h4><i>Readings I’ve appreciated.</i></h4>
+    <!-- Book Count -->
+    <div id="book-count">Total Books: 0</div>
+
     <!-- Filter Buttons -->
     <div class="filter-buttons">
         <button class="filter-button active" data-filter="all">All</button>
         <button class="filter-button" data-filter="fiction">Fiction</button>
         <button class="filter-button" data-filter="non-fiction">Non-Fiction</button>
     </div>
+    
+    
+
     <!-- Gallery -->
     <div class="gallery" id="book-gallery">
         <!-- Books -->
@@ -42,12 +48,27 @@
                     `;
                     gallery.appendChild(bookDiv);
                 });
+
+                updateBookCount('all');
             } catch (error) {
                 console.error('Error fetching books:', error);
             }
         }
 
-        
+        function updateBookCount(filter) {
+            const books = document.querySelectorAll('.book');
+            let count = 0;
+
+            books.forEach(book => {
+                if (filter === 'all' || book.getAttribute('data-category') === filter) {
+                    count++;
+                }
+            });
+
+            const bookCountDiv = document.getElementById('book-count');
+            bookCountDiv.textContent = `Total Books: ${count}`;
+        }
+
         window.onload = fetchBooks;
 
         // Filter 
@@ -64,6 +85,8 @@
                         book.style.display = 'none';
                     }
                 });
+
+                updateBookCount(filter);
             });
         });
     </script>

@@ -9,6 +9,7 @@
 <body>
     <h1>BookShelf</h1>
     <h4><i>Readings I’ve appreciated.</i></h4>
+    
     <!-- Book Count -->
     <div id="book-count">Total Books: 0</div>
 
@@ -17,10 +18,9 @@
         <button class="filter-button active" data-filter="all">All</button>
         <button class="filter-button" data-filter="fiction">Fiction</button>
         <button class="filter-button" data-filter="non-fiction">Non-Fiction</button>
+        <button class="filter-button" id="currently-reading-button">Currently Reading</button>
     </div>
     
-    
-
     <!-- Gallery -->
     <div class="gallery" id="book-gallery">
         <!-- Books -->
@@ -74,6 +74,12 @@
         // Filter 
         document.querySelectorAll('.filter-button').forEach(button => {
             button.addEventListener('click', function() {
+                if (this.id === 'currently-reading-button') {
+                    // Redirect to another site
+                    window.location.href = 'https://dawit-sh.github.io/Currently/'; 
+                    return;
+                }
+
                 document.querySelectorAll('.filter-button').forEach(btn => btn.classList.remove('active'));
                 this.classList.add('active');
                 

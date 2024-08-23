@@ -4,123 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dawit Sharon</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body>
     <div class="container">
-        <div class="card">
-            <h1>ስላም 👋</h1>
-            <h6>I am Dawit Sharon</h6>
-            <p>Hobbyist low-level developer and avid book lover. Exploring the intersection of code and literature.</p>
-        </div>
+        <header>
+            <div class="welcome animate-fade-in">ሰላም 👋</div>
+            <h1>
+                <span data-text="D">D</span>
+                <span data-text="A">A</span>
+                <span data-text="W">W</span>
+                <span data-text="I">I</span>
+                <span data-text="T">T</span>
+                <span data-text="-">-</span>
+                <span data-text="S">S</span>
+                <span data-text="H">H</span>
+            </h1>
+        </header>
 
-        <div class="card">
-            <h2>Connect 🔗</h2>
-            <a href="#" class="btn" id="telegram-btn"><i class="fab fa-telegram"></i> Telegram</a>
-            <a href="#" class="btn" id="github-btn"><i class="fab fa-github"></i> GitHub</a>
-            <a href="#" class="btn" id="linkedin-btn"><i class="fab fa-linkedin"></i> LinkedIn</a>
-            <a href="#" class="btn" id="blog-btn"><i class="fas fa-blog"></i> Blog</a>
-            <a href="#" class="btn" id="bookshelf-btn"><i class="fas fa-book-open"></i> Bookshelf</a>
-        </div>
-
-        <div class="card">
-            <h2>Skills 🧰</h2>
-            <div class="skills-list">
-                <span class="skill-tag">C</span>
-                <span class="skill-tag">Assembly</span>
-                <span class="skill-tag">Python</span>
-                <span class="skill-tag">Lua</span>
-                <span class="skill-tag">Linux</span>
-                <span class="skill-tag">GDB</span>
-                <span class="skill-tag">Bash</span>
-                <span class="skill-tag">SQL</span>
-                <span class="skill-tag">Docker</span>
-                <span class="skill-tag">Julia</span>
-                <span class="skill-tag">Git</span>
-                <span class="skill-tag">Make</span>
+        <div class="content">
+            <div class="year-container">
+                <div class="year" id="year">'20</div>
+                <div class="alive-time" id="aliveTime"></div>
+                <div class="percent-elapsed" id="percentElapsed"></div>
+            </div>
+            <div class="profile">
+                <div class="profile-image">
+                    <img src="assets/icon.jpg" alt="Me">
+                </div>
+                <div class="profile-titles">
+                    <p>Programmer/Writer</p>
+                </div>
+                <ul class="connect">
+                    <li><a href="https://dawit-sh.github.io/CupofteaV2/">Blog</a></li>
+                    <hr>
+                    <li><a href="https://t.me/davedumps">Telegram</a></li>
+                    <hr>
+                    <li><a href="https://github.com/Dawit-Sh">Github</a></li>
+                    <hr>
+                    <li><a href="books.html">Books</a></li>
+                </ul>
             </div>
         </div>
 
-        <div class="card">
-            <h2>Projects 🚧</h2>
-            <div class="project-card" id="project1-btn">
-                <h3>Bashnit</h3>
-                <p>Innit System in shell script</p>
+        <footer>
+            <div class="work-inquiries">Work Inquiries</div>
+            <div class="social-links">
+                <a href="mailto:civiliandavid0@gmail.com">EMAIL</a>
+                <a href="www.linkedin.com/in/dawit-sharon">LINKEDIN</a>
             </div>
-            <div class="project-card" id="project2-btn">
-                <h3>Alpha-Core</h3>
-                <p>simple abstruct routines to configure and use STM32F103 microprocessor.</p>
-            </div>
-            <!-- @ -->
-        </div>
+            <div class="copyright" id="copyright"></div>
+        </footer>
     </div>
-
-    <div class="popup" id="telegram-popup">
-        <span class="popup-close">&times;</span>
-        <div class="popup-content">
-            <h2>Join My Community on Telegram</h2>
-            <p>A Vibrant Community on Telegram. Connect with like-minded individuals, discuss topics, and stay updated on the latest developments.</p>
-            <a href="https://t.me/davedumps" target="_blank">Join</a>
-        </div>
-    </div>
-
-    <div class="popup" id="github-popup">
-        <span class="popup-close">&times;</span>
-        <div class="popup-content">
-            <h2>Visit My GitHub</h2>
-            <p>Find various projects, from open-source contributions to personal experiments and utilities.</p>
-            <a href="https://github.com/Dawit-Sh" target="_blank">Visit</a>
-        </div>
-    </div>
-
-    <div class="popup" id="linkedin-popup">
-        <span class="popup-close">&times;</span>
-        <div class="popup-content">
-            <h2>Visit My LinkedIn</h2>
-            <p>Connect with me professionally on LinkedIn.</p>
-            <a href="#" target="_blank">Visit</a>
-        </div>
-    </div>
-
-    <div class="popup" id="blog-popup">
-        <span class="popup-close">&times;</span>
-        <div class="popup-content">
-            <h2>Read My Blog</h2>
-            <p>Check out my latest articles on tech, programming, and book reviews.</p>
-            <a href="https://dawit-sh.github.io/CupofteaV2/" target="_blank">Visit</a>
-        </div>
-    </div>
-
-    <div class="popup" id="bookshelf-popup">
-        <span class="popup-close">&times;</span>
-        <div class="popup-content">
-            <h2>Explore My Bookshelf</h2>
-            <p>Discover a curated collection of my favorite books.</p>
-            <a href="https://dawit-sh.github.io/books.html" target="_blank">Visit</a>
-        </div>
-    </div>
-
-    <div class="popup" id="project1-popup">
-        <span class="popup-close">&times;</span>
-        <div class="popup-content">
-            <h2>Bashnit</h2>
-            <p>Innit System in shell script</p>
-            <a href="https://github.com/Dawit-Sh/Bashnit" target="_blank">Visit</a>
-        </div>
-    </div>
-
-    <div class="popup" id="project2-popup">
-        <span class="popup-close">&times;</span>
-        <div class="popup-content">
-            <h2>Alpha-Core</h2>
-            <p>simple abstruct routines to configure and use STM32F103 microprocessor.</p>
-            <a href="https://github.com/Dawit-Sh/Alpha-Core" target="_blank">Visit</a>
-        </div>
-    </div>
-
-    <div class="overlay"></div>
-
     <script src="assets/js/main.js"></script>
 </body>
 </html>

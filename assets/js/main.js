@@ -46,10 +46,9 @@ function updateAliveTime() {
 
 function updateCopyright() {
   const currentYear = new Date().getFullYear();
-  const repoUrl = "https://github.com/Dawit-Sh/Dawit-Sh.github.io"; 
+  const repoUrl = "https://github.com/Dawit-Sh/Dawit-Sh.github.io";
   copyrightElement.innerHTML = `©${currentYear} Dawit Sharon. <a href="${repoUrl}" target="_blank" style="text-decoration: none; color: inherit;">Code it, remix it, and pass it on!</a>`;
 }
-
 
 // Update year, copyright, and set interval to check daily
 updateYear();

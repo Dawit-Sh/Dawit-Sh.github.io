@@ -57,3 +57,44 @@ setInterval(updateYear, 24 * 60 * 60 * 1000);
 
 // Update alive time and percent elapsed every second
 setInterval(updateAliveTime, 1000);
+
+// Skills toggle functionality
+const skillsToggle = document.getElementById("skills-toggle");
+const skillsContainer = document.querySelector(".skills-container");
+
+skillsToggle.addEventListener("click", (e) => {
+  e.preventDefault();
+  skillsContainer.classList.toggle("show");
+});
+
+// Close skills container when clicking outside
+document.addEventListener("click", (e) => {
+  if (!skillsContainer.contains(e.target) && e.target !== skillsToggle) {
+    skillsContainer.classList.remove("show");
+  }
+});
+
+// Loading animation
+window.addEventListener("load", () => {
+  const loadingContainer = document.querySelector(".loading-container");
+  const loadingText = document.querySelector(".loading-text");
+  const text = "UNIX";
+  let index = 0;
+
+  function typeText() {
+    if (index < text.length) {
+      loadingText.textContent += text.charAt(index);
+      index++;
+      setTimeout(typeText, 200);
+    } else {
+      setTimeout(() => {
+        loadingContainer.style.opacity = "0";
+        setTimeout(() => {
+          loadingContainer.style.display = "none";
+        }, 500);
+      }, 1000);
+    }
+  }
+
+  typeText();
+});

@@ -1,21 +1,43 @@
  body {
             font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+            background-color: #1a1a1a;
+            color: #f0f0f0;
             margin: 0;
             padding: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        h1, h4 {
+            text-align: center;
         }
 
         .gallery {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .book {
             position: relative;
             overflow: hidden;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .book:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(255, 255, 255, 0.2);
         }
 
         .book img {
@@ -30,7 +52,7 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.8);
             color: white;
             padding: 10px;
             text-align: center;
@@ -42,7 +64,6 @@
             transform: translateY(0);
         }
 
-        /* Filter buttons */
         .filter-buttons {
             margin-bottom: 20px;
             text-align: center;
@@ -61,15 +82,29 @@
             border: none;
             border-radius: 50px;
             font-size: 16px;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.3s ease;
         }
 
         .filter-buttons button.active,
         .filter-buttons button:hover {
-            background-color: #3b4046;
+            background-color: #5a6470;
+            transform: scale(1.05);
         }
 
-        /* Responsive Styles */
+        #book-count {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 18px;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards 0.5s;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
         @media (max-width: 768px) {
             .gallery {
                 grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));

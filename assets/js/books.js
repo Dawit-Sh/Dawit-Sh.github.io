@@ -4,18 +4,19 @@ async function fetchBooks() {
     const books = await response.json();
     const gallery = document.getElementById("book-gallery");
 
-    books.forEach((book) => {
+    books.forEach((book, index) => {
       const bookDiv = document.createElement("div");
       bookDiv.classList.add("book");
       bookDiv.setAttribute("data-category", book.category);
+      bookDiv.style.animation = `fadeInUp 0.5s ease forwards ${index * 0.1}s`;
 
       bookDiv.innerHTML = `
-                        <img src="${book.image}" alt="${book.title}">
-                        <div class="book-info">
-                            <h2>${book.title}</h2>
-                            <p>${book.author}</p>
-                        </div>
-                    `;
+                    <img src="${book.image}" alt="${book.title}">
+                    <div class="book-info">
+                        <h2>${book.title}</h2>
+                        <p>${book.author}</p>
+                    </div>
+                `;
       gallery.appendChild(bookDiv);
     });
 
@@ -44,11 +45,7 @@ window.onload = fetchBooks;
 // Filter
 document.querySelectorAll(".filter-button").forEach((button) => {
   button.addEventListener("click", function () {
-    if (this.id === "currently-reading-button") {
-      // Redirect to another site
-      window.location.href = "https://dawit-sh.github.io/Currently/";
-      return;
-    }
+    
 
     document
       .querySelectorAll(".filter-button")
@@ -56,9 +53,10 @@ document.querySelectorAll(".filter-button").forEach((button) => {
     this.classList.add("active");
 
     const filter = this.getAttribute("data-filter");
-    document.querySelectorAll(".book").forEach((book) => {
+    document.querySelectorAll(".book").forEach((book, index) => {
       if (filter === "all" || book.getAttribute("data-category") === filter) {
         book.style.display = "";
+        book.style.animation = `fadeInUp 0.5s ease forwards ${index * 0.1}s`;
       } else {
         book.style.display = "none";
       }

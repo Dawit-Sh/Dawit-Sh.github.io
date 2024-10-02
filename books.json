@@ -179,7 +179,6 @@
     "category": "non-fiction",
     "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1453215833i/1842.jpg"
   },
-
   {
     "title": "Psychology and the Occult",
     "author": "C.G. Jung",
@@ -377,5 +376,11 @@
     "author": "Fyodor Dostoevsky",
     "category": "fiction",
     "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1630563932i/12857.jpg"
+  },
+  {
+    "title": "The Sublime Object of Ideology",
+    "author": "Slavoj Žižek",
+    "category": "non-fiction",
+    "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1713229988i/6055001.jpg"
   }
 ]

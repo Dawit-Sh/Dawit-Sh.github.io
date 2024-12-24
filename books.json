@@ -18,7 +18,7 @@
     "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1657540227i/6656.jpg"
   },
   {
-    "title": "Faust I & II",
+    "title": "Faust",
     "author": "Johann Wolfgang von Goethe",
     "category": "fiction",
     "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1658184791i/61605332.jpg"
@@ -400,6 +400,12 @@
     "author": "Byung-Chul Han",
     "category": "non-fiction",
     "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1512829190i/37133029.jpg"
+  },
+  {
+    "title": "Anthem",
+    "author": "Ayn Rand",
+    "category": "fiction",
+    "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1441051876i/5460367.jpg"
   }
 
 ]

@@ -126,18 +126,6 @@
     "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1370634866i/147521.jpg"
   },
   {
-    "title": "The Gulag Archipelago",
-    "author": "Aleksandr Solzhenitsyn",
-    "category": "non-fiction",
-    "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1610935574i/246422.jpg"
-  },
-  {
-    "title": "Albert Einstein's Philosophical Views and the Theory of Relativity",
-    "author": "D.P. Gribanov",
-    "category": "non-fiction",
-    "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1611492271i/56801359.jpg"
-  },
-  {
     "title": "A Brief History of Time: From the Big Bang to Black Holes",
     "author": "Stephen Hawking",
     "category": "non-fiction",
@@ -168,12 +156,6 @@
     "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1387706580i/889249.jpg"
   },
   {
-    "title": "\"Surely You're Joking, Mr. Feynman!\"",
-    "author": "Richard P. Feynman",
-    "category": "non-fiction",
-    "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1504936953i/35167685.jpg"
-  },
-  {
     "title": "Guns, Germs, and Steel",
     "author": "Jared Diamond",
     "category": "non-fiction",
@@ -184,12 +166,6 @@
     "author": "C.G. Jung",
     "category": "non-fiction",
     "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1696678325i/195069995.jpg"
-  },
-  {
-    "title": "MIKHAIL LOMONOSOV",
-    "author": "GALINA PAVLOVA and ALEXANDER FYODOROV",
-    "category": "non-fiction",
-    "image": "https://www.anticariat-unu.ro/uploads/products/mikhail-lomonosov-life-and-work-by-galina-pavlova-and-alexander-fyodorov-1984-p313246-0.JPG"
   },
   {
     "title": "Being and Time",
@@ -400,12 +376,5 @@
     "author": "Byung-Chul Han",
     "category": "non-fiction",
     "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1512829190i/37133029.jpg"
-  },
-  {
-    "title": "Anthem",
-    "author": "Ayn Rand",
-    "category": "fiction",
-    "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1441051876i/5460367.jpg"
   }
-
 ]

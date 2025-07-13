@@ -136,13 +136,13 @@
 
             .subtitle {
                 font-size: 1.2rem;
-                margin-top: 0; /* Remove extra space above subtitle */
+                margin-top: 0;
                 text-align: center;
             }
 
             .nav {
                 width: 100%;
-                margin: 0;
+                margin: 1.2rem 0 0 0; /* Add small gap above icons */
                 order: 2;
             }
 
@@ -166,6 +166,12 @@
 
             .nav-link .nav-text {
                 display: none;
+            }
+
+            .nav-link::before,
+            .nav-link::after {
+                display: none !important;
+                content: none !important;
             }
         }
 

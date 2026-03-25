@@ -13,6 +13,20 @@
             justify-content: center;
             align-items: center;
             padding: 2rem;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 20px 20px;
+            z-index: -1;
+            pointer-events: none;
         }
 
         .container {
@@ -84,8 +98,28 @@
             line-height: 1.2;
             margin-bottom: 2rem;
             opacity: 0;
-            transform: translateY(20px);
-            animation: fadeIn 0.8s ease forwards;
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .hi-wrapper {
+            display: inline-flex;
+            align-items: center;
+            gap: 1.5rem;
+            vertical-align: middle;
+        }
+
+        .profile-pic {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #1a1a1a;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .profile-pic:hover {
+            transform: scale(1.05);
         }
 
         .subtitle {
@@ -132,6 +166,19 @@
             .intro {
                 font-size: 2.5rem;
                 margin-bottom: 0.5rem; /* Less space below intro */
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .hi-wrapper {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .profile-pic {
+                width: 70px;
+                height: 70px;
             }
 
             .subtitle {
@@ -151,13 +198,18 @@
                 flex-direction: row;
                 justify-content: center;
                 align-items: center;
-                gap: 2rem;
+                gap: 1.2rem;
                 margin: 0;
                 padding: 0;
             }
 
+            .nav-item {
+                margin-bottom: 0;
+                text-align: center;
+            }
+
             .nav-link {
-                font-size: 2rem;
+                font-size: 1.6rem;
                 color: #000;
                 display: flex;
                 flex-direction: column;
@@ -186,5 +238,107 @@
 
             .subtitle {
                 font-size: 1.2rem;
+            }
+        }
+
+        /* About Panel Styles */
+        .about-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100vh;
+            background-color: #000000;
+            color: #ffffff;
+            z-index: 1000;
+            transform: translateX(100%);
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            padding: 4rem;
+            box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+        }
+
+        .about-panel.active {
+            transform: translateX(0);
+        }
+
+        .about-content {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .about-title {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: -2px;
+            line-height: 1;
+        }
+
+        .about-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: #ccc;
+            max-width: 500px;
+        }
+
+        .about-text p {
+            margin-bottom: 1.5rem;
+        }
+
+
+        /* Backdrop */
+        .backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(2px);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .backdrop.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        @media (max-width: 768px) {
+            .about-panel {
+                width: 100%;
+                height: 55vh;
+                top: 0;
+                right: 0;
+                transform: translateY(-100%);
+                padding: 3rem 2rem 2rem 2rem;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            .about-panel.active {
+                transform: translateY(0);
+            }
+
+            .about-title {
+                font-size: 2.2rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .about-text {
+                font-size: 1.1rem;
+            }
+
+            /* Ensure nav is below panel on mobile */
+            .nav {
+                z-index: 1;
             }
         }

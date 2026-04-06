@@ -28,12 +28,22 @@ if (window.matchMedia("(hover: hover)").matches) {
 const experienceList = document.getElementById('experience-list');
 
 async function loadExperience() {
-  if (!experienceList) return;
+  if (!experienceList) {
+    console.error('Experience list container not found');
+    return;
+  }
   
   try {
     const response = await fetch('assets/data/experience.json');
-    if (!response.ok) throw new Error('Failed to load experience data');
+    if (!response.ok) {
+        throw new Error(`Failed to load experience data: ${response.status} ${response.statusText}`);
+    }
     const data = await response.json();
+    
+    if (!Array.isArray(data) || data.length === 0) {
+        experienceList.innerHTML = '<p class="info">No work experience found.</p>';
+        return;
+    }
     
     experienceList.innerHTML = data.map(exp => `
       <div class="experience-item">
@@ -49,7 +59,12 @@ async function loadExperience() {
     `).join('');
   } catch (error) {
     console.error('Error loading experience:', error);
-    experienceList.innerHTML = '<p class="error">Failed to load work experience. Please try again later.</p>';
+    experienceList.innerHTML = `
+        <div class="error-message">
+            <p>Failed to load work experience.</p>
+            <small>${error.message}</small>
+        </div>
+    `;
   }
 }
 

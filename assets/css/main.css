@@ -59,8 +59,24 @@
             transition: color 0.3s ease;
         }
 
-        .nav-link:hover {
-            color: #666;
+        @media (hover: hover) {
+            .nav-link:hover {
+                color: #666;
+            }
+
+            .nav-link:hover::before {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            .nav-link:hover::after {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            .profile-pic:hover {
+                transform: scale(1.05);
+            }
         }
 
         .nav-link::before {
@@ -77,16 +93,6 @@
             opacity: 0;
             transform: translateX(-10px);
             transition: all 0.3s ease;
-        }
-
-        .nav-link:hover::before {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        .nav-link:hover::after {
-            opacity: 1;
-            transform: translateX(0);
         }
 
         .content {
@@ -118,10 +124,6 @@
             transition: transform 0.3s ease;
         }
 
-        .profile-pic:hover {
-            transform: scale(1.05);
-        }
-
         .subtitle {
             font-size: 1.5rem;
             color: #666;
@@ -150,12 +152,12 @@
 
             .container {
                 flex-direction: column;
-                justify-content: center;
+                justify-content: flex-start; /* Move to top */
                 align-items: center;
                 min-height: 100vh;
                 gap: 0;
                 text-align: center;
-                padding: 0;
+                padding: 10vh 0 0 0; /* Move content down from the very top */
             }
 
             .content {
@@ -311,6 +313,148 @@
             visibility: visible;
         }
 
+        /* Experience Panel Styles */
+        .experience-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 45%;
+            height: 100vh;
+            background-color: #ffffff;
+            color: #1a1a1a;
+            z-index: 1000;
+            transform: translateX(-100%);
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            padding: 4rem 3rem;
+            box-shadow: 10px 0 30px rgba(0,0,0,0.05);
+            border-right: 1px solid #eee;
+            overflow: hidden;
+        }
+
+        .experience-panel::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 20px 20px;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .experience-panel.active {
+            transform: translateX(0);
+        }
+
+        .experience-content {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .experience-title {
+            font-size: 2rem;
+            font-weight: 500;
+            margin-bottom: 3rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        .experience-title::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 2px;
+            background: #eee;
+        }
+
+        .experience-list {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 1rem;
+            padding-bottom: 2rem;
+            /* Hide scrollbar for a cleaner look */
+            scrollbar-width: thin;
+            scrollbar-color: #eee transparent;
+        }
+
+        .experience-list::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .experience-list::-webkit-scrollbar-thumb {
+            background-color: #eee;
+            border-radius: 10px;
+        }
+
+        .experience-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+
+        .exp-dot {
+            width: 10px;
+            height: 10px;
+            background-color: #1a1a1a;
+            border-radius: 50%;
+            margin-top: 0.6rem;
+            flex-shrink: 0;
+        }
+
+        .exp-info {
+            flex: 1;
+        }
+
+        .exp-role {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: #1a1a1a;
+        }
+
+        .exp-company {
+            font-size: 1.1rem;
+            color: #1a1a1a;
+            opacity: 0.9;
+        }
+
+        .exp-description {
+            font-size: 1rem;
+            color: #666;
+            margin-top: 0.5rem;
+            line-height: 1.5;
+        }
+
+        .exp-details {
+            margin-top: 0.75rem;
+            padding-left: 1.2rem;
+            list-style-type: disc;
+            color: #666;
+        }
+
+        .exp-details li {
+            font-size: 0.95rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .exp-date {
+            font-size: 0.95rem;
+            color: #999;
+            white-space: nowrap;
+            margin-top: 0.5rem;
+        }
+
         @media (max-width: 768px) {
             .about-panel {
                 width: 100%;
@@ -337,7 +481,53 @@
                 font-size: 1.1rem;
             }
 
-            /* Ensure nav is below panel on mobile */
+            .experience-panel {
+                width: 100%;
+                height: 70vh;
+                top: auto;
+                bottom: 0;
+                left: 0;
+                transform: translateY(100%);
+                padding: 2.5rem 1.5rem 1.5rem 1.5rem;
+                border-right: none;
+                border-top: 1px solid #eee;
+                border-radius: 20px 20px 0 0;
+                box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
+            }
+
+            .experience-panel.active {
+                transform: translateY(0);
+            }
+
+            .experience-title {
+                font-size: 1.6rem;
+                margin-bottom: 2rem;
+            }
+
+            .experience-item {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .exp-dot {
+                display: none; /* Simplify mobile view */
+            }
+
+            .exp-date {
+                margin-top: 0;
+                order: -1;
+                font-size: 0.85rem;
+            }
+
+            .exp-role {
+                font-size: 1.1rem;
+            }
+
+            .exp-company {
+                font-size: 1rem;
+            }
+
+            /* Ensure nav is below panels on mobile */
             .nav {
                 z-index: 1;
             }

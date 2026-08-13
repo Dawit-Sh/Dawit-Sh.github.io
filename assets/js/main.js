@@ -32,19 +32,19 @@ async function loadExperience() {
     console.error('Experience list container not found');
     return;
   }
-  
+
   try {
     const response = await fetch('assets/data/experience.json');
     if (!response.ok) {
-        throw new Error(`Failed to load experience data: ${response.status} ${response.statusText}`);
+      throw new Error(`Failed to load experience data: ${response.status} ${response.statusText}`);
     }
     const data = await response.json();
-    
+
     if (!Array.isArray(data) || data.length === 0) {
-        experienceList.innerHTML = '<p class="info">No work experience found.</p>';
-        return;
+      experienceList.innerHTML = '<p class="info">No work experience found.</p>';
+      return;
     }
-    
+
     experienceList.innerHTML = data.map(exp => `
       <div class="experience-item">
         <div class="exp-dot"></div>
@@ -60,38 +60,100 @@ async function loadExperience() {
   } catch (error) {
     console.error('Error loading experience:', error);
     experienceList.innerHTML = `
-        <div class="error-message">
-            <p>Failed to load work experience.</p>
-            <small>${error.message}</small>
+      <div class="error-message">
+        <p>Failed to load work experience.</p>
+        <small>${error.message}</small>
+      </div>
+    `;
+  }
+}
+
+// Fetch and render publications data
+const publicationsList = document.getElementById('publications-list');
+
+async function loadPublications() {
+  if (!publicationsList) {
+    console.error('Publications list container not found');
+    return;
+  }
+
+  try {
+    const response = await fetch('assets/data/publications.json');
+    if (!response.ok) {
+      throw new Error(`Failed to load publications data: ${response.status} ${response.statusText}`);
+    }
+    const data = await response.json();
+
+    if (!Array.isArray(data) || data.length === 0) {
+      publicationsList.innerHTML = '<p class="info">No publications found.</p>';
+      return;
+    }
+
+    publicationsList.innerHTML = data.map(pub => {
+      const actions = [];
+      if (pub.url) {
+        actions.push(`<a href="${pub.url}" class="pub-action-link" target="_blank" rel="noopener noreferrer">
+          <i class="fas fa-external-link-alt"></i> View Online
+        </a>`);
+      }
+      if (pub.pdf) {
+        actions.push(`<a href="${pub.pdf}" class="pub-action-link" target="_blank" rel="noopener noreferrer" download>
+          <i class="fas fa-file-pdf"></i> Download PDF
+        </a>`);
+      }
+      return `
+        <div class="publication-item">
+          <div class="pub-dot"></div>
+          <div class="pub-info">
+            <h3 class="pub-title">${pub.title}</h3>
+            <p class="pub-venue">${pub.venue}</p>
+            ${actions.length > 0 ? `<div class="pub-actions">${actions.join('')}</div>` : ''}
+          </div>
         </div>
+      `;
+    }).join('');
+  } catch (error) {
+    console.error('Error loading publications:', error);
+    publicationsList.innerHTML = `
+      <div class="error-message">
+        <p>Failed to load publications.</p>
+        <small>${error.message}</small>
+      </div>
     `;
   }
 }
 
 // Load data on initialization
-document.addEventListener('DOMContentLoaded', loadExperience);
+document.addEventListener('DOMContentLoaded', () => {
+  loadExperience();
+  loadPublications();
+});
 
-// About & Experience Panels Toggle
+// About, Experience & Publications Panels Toggle
 const aboutLink = document.getElementById('about-link');
 const aboutPanel = document.getElementById('about-panel');
 const experienceLink = document.getElementById('experience-link');
 const experiencePanel = document.getElementById('experience-panel');
+const publicationsLink = document.getElementById('publications-link');
+const publicationsPanel = document.getElementById('publications-panel');
 const backdrop = document.getElementById('backdrop');
+
+const allPanels = [aboutPanel, experiencePanel, publicationsPanel].filter(Boolean);
 
 function togglePanel(panel, show) {
   if (show) {
     // Close other panels first
-    [aboutPanel, experiencePanel].forEach(p => {
+    allPanels.forEach(p => {
       if (p !== panel) p.classList.remove('active');
     });
-    
+
     panel.classList.add('active');
     backdrop.classList.add('active');
-    document.body.style.overflow = 'hidden'; 
+    document.body.style.overflow = 'hidden';
   } else {
     panel.classList.remove('active');
     // Only remove backdrop if no panels are active
-    if (!aboutPanel.classList.contains('active') && !experiencePanel.classList.contains('active')) {
+    if (allPanels.every(p => !p.classList.contains('active'))) {
       backdrop.classList.remove('active');
       document.body.style.overflow = '';
     }
@@ -99,7 +161,7 @@ function togglePanel(panel, show) {
 }
 
 function closeAllPanels() {
-  [aboutPanel, experiencePanel].forEach(p => p.classList.remove('active'));
+  allPanels.forEach(p => p.classList.remove('active'));
   backdrop.classList.remove('active');
   document.body.style.overflow = '';
 }
@@ -115,6 +177,13 @@ if (experienceLink && experiencePanel) {
   experienceLink.addEventListener('click', (e) => {
     e.preventDefault();
     togglePanel(experiencePanel, !experiencePanel.classList.contains('active'));
+  });
+}
+
+if (publicationsLink && publicationsPanel) {
+  publicationsLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    togglePanel(publicationsPanel, !publicationsPanel.classList.contains('active'));
   });
 }
 

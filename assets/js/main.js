@@ -215,11 +215,13 @@ deck.play?.addEventListener('click', () => {
 deck.prev?.addEventListener('click', () => select(current - 1, !isPaused));
 deck.next?.addEventListener('click', () => select(current + 1, !isPaused));
 
-// Recommend a song: opens the visitor's email, addressed to Dawit
+// Recommend a song: opens the visitor's email, addressed to the form's data-to
 const recommendForm = document.getElementById('recommend');
 
 recommendForm?.addEventListener('submit', (e) => {
   e.preventDefault();
+  const to = recommendForm.dataset.to;
+  if (!to) return;
   const f = new FormData(recommendForm);
   const subject = `Song for you: ${f.get('song')} by ${f.get('artist')}`;
   const body = [
@@ -229,7 +231,7 @@ recommendForm?.addEventListener('submit', (e) => {
     '',
     f.get('name') ? `From ${f.get('name')}` : '',
   ].filter((line, i, all) => line || (i > 0 && all[i - 1])).join('\n');
-  window.location.href = `mailto:civiliandavid0@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 });
 
 // Load data on initialization

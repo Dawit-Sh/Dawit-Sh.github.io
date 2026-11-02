@@ -1,0 +1,16 @@
+[
+    {
+        "title": "Placeholder: Today's Top Hits",
+        "by": "Spotify",
+        "type": "Playlist",
+        "spotify": "https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M",
+        "note": "Swap this for one of your own playlists, albums, artists or songs."
+    },
+    {
+        "title": "Placeholder: RapCaviar",
+        "by": "Spotify",
+        "type": "Playlist",
+        "spotify": "https://open.spotify.com/playlist/37i9dQZF1DX0XUsuxWHRQd",
+        "note": "Any open.spotify.com link works here: track, album, playlist or artist."
+    }
+]

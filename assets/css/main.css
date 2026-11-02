@@ -115,22 +115,19 @@ a {
 
 .portrait {
     position: absolute;
-    left: 1.5%;
+    left: 9%;
     bottom: 0;
-    width: 98.5%;
-    height: 93%;
-    object-fit: cover;
-    object-position: 50% 0;
-    filter: grayscale(1) contrast(1.25) brightness(1.08);
-    /* light background melts into the red and white blocks behind it */
-    mix-blend-mode: multiply;
+    height: 90%;
+    width: auto;
+    max-width: none;
+    filter: contrast(1.08);
 }
 
 .blk-tint {
     position: absolute;
     left: 0;
     top: 23%;
-    width: 31%;
+    width: 25%;
     height: 54%;
     background: var(--tint);
 }

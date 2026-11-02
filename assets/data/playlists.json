@@ -1,16 +1,12 @@
 [
-    {
-        "title": "Placeholder: Today's Top Hits",
-        "by": "Spotify",
-        "type": "Playlist",
-        "spotify": "https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M",
-        "note": "Swap this for one of your own playlists, albums, artists or songs."
-    },
-    {
-        "title": "Placeholder: RapCaviar",
-        "by": "Spotify",
-        "type": "Playlist",
-        "spotify": "https://open.spotify.com/playlist/37i9dQZF1DX0XUsuxWHRQd",
-        "note": "Any open.spotify.com link works here: track, album, playlist or artist."
-    }
+    { "title": "Newport", "by": "Newport", "type": "Artist", "spotify": "https://open.spotify.com/artist/3BfSHf6fsuUA1KMXLX1Tur" },
+    { "title": "This Is Jeremy Zucker", "by": "Jeremy Zucker", "type": "Playlist", "spotify": "https://open.spotify.com/playlist/37i9dQZF1DZ06evO1Tv9wE" },
+    { "title": "BELOVED", "by": "GIVĒON · 2025", "type": "Album", "spotify": "https://open.spotify.com/album/7pcBXbl1g198PNAxt44bHQ" },
+    { "title": "Give Or Take", "by": "GIVĒON · 2022", "type": "Album", "spotify": "https://open.spotify.com/album/64LkgCfNbLqjclQYCTid8L" },
+    { "title": "The Off-Season", "by": "J. Cole · 2021", "type": "Album", "spotify": "https://open.spotify.com/album/4JAvwK4APPArjIsOdGoJXX" },
+    { "title": "Born Sinner", "by": "J. Cole · 2013", "type": "Album", "spotify": "https://open.spotify.com/album/1NfrmcXk8xNennyxQ57JcW" },
+    { "title": "GNX", "by": "Kendrick Lamar · 2024", "type": "Album", "spotify": "https://open.spotify.com/album/0hvT3yIEysuuvkK73vgdcW" },
+    { "title": "beerbongs & bentleys", "by": "Post Malone · 2018", "type": "Album", "spotify": "https://open.spotify.com/album/6trNtQUgC8cgbWcqoMYkOR" },
+    { "title": "Inner Monologue Part 1", "by": "Julia Michaels · 2019", "type": "Album", "spotify": "https://open.spotify.com/album/1xJ7jIK1tT0aVoJw1fPE6r" },
+    { "title": "AURORA", "by": "AURORA", "type": "Artist", "spotify": "https://open.spotify.com/artist/1WgXqy2Dd70QQOU7Ay074N" }
 ]

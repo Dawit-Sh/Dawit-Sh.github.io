@@ -6,7 +6,8 @@ function esc(value) {
 }
 
 async function loadJSON(path) {
-  const response = await fetch(path);
+  // revalidate every visit so edited lists show up right away (GitHub Pages caches for 10 minutes)
+  const response = await fetch(path, { cache: 'no-cache' });
   if (!response.ok) {
     throw new Error(`Failed to load ${path}: ${response.status} ${response.statusText}`);
   }

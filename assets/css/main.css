@@ -217,7 +217,7 @@ a {
     position: absolute;
     left: 5%;
     right: 30%;
-    top: 43%;
+    top: 36%;
 }
 
 .name-label .label {
@@ -255,6 +255,48 @@ a {
 
 .giant-a {
     margin-left: -0.01em;
+}
+
+/* the resume: the main call to action on the cover */
+.resume-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.4em;
+    width: 100%;
+    margin-top: clamp(14px, 1.6cqw, 24px);
+    padding: 0.18em 0.32em 0.1em;
+    background: var(--red);
+    color: var(--ink);
+    font-family: var(--display);
+    font-size: clamp(36px, 4.2cqw, 64px);
+    line-height: 1;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: background 0.25s, color 0.25s, letter-spacing 0.4s var(--ease-out, ease);
+}
+
+.resume-arrow {
+    display: inline-block;
+    transition: transform 0.35s;
+}
+
+.resume-btn:hover,
+.resume-btn:focus-visible {
+    background: var(--ink);
+    color: var(--paper);
+    letter-spacing: 0.04em;
+    outline: none;
+}
+
+.resume-btn:hover .resume-arrow,
+.resume-btn:focus-visible .resume-arrow {
+    animation: drop 0.9s ease-in-out infinite;
+}
+
+@keyframes drop {
+    0%, 100% { transform: translateY(-0.06em); }
+    50% { transform: translateY(0.12em); }
 }
 
 /* ---------- Sections ---------- */
@@ -1187,6 +1229,10 @@ li:not(.has-art) .cover-art img {
     .name-label .label {
         font-size: 15px;
         border-bottom: var(--rule);
+    }
+
+    .resume-btn {
+        font-size: 40px;
     }
 
     .giant {

@@ -1,12 +1,10 @@
 [
-    { "title": "Newport", "by": "Newport", "type": "Artist", "spotify": "https://open.spotify.com/artist/3BfSHf6fsuUA1KMXLX1Tur" },
-    { "title": "This Is Jeremy Zucker", "by": "Jeremy Zucker", "type": "Playlist", "spotify": "https://open.spotify.com/playlist/37i9dQZF1DZ06evO1Tv9wE" },
-    { "title": "BELOVED", "by": "GIVĒON · 2025", "type": "Album", "spotify": "https://open.spotify.com/album/7pcBXbl1g198PNAxt44bHQ" },
-    { "title": "Give Or Take", "by": "GIVĒON · 2022", "type": "Album", "spotify": "https://open.spotify.com/album/64LkgCfNbLqjclQYCTid8L" },
-    { "title": "The Off-Season", "by": "J. Cole · 2021", "type": "Album", "spotify": "https://open.spotify.com/album/4JAvwK4APPArjIsOdGoJXX" },
-    { "title": "Born Sinner", "by": "J. Cole · 2013", "type": "Album", "spotify": "https://open.spotify.com/album/1NfrmcXk8xNennyxQ57JcW" },
-    { "title": "GNX", "by": "Kendrick Lamar · 2024", "type": "Album", "spotify": "https://open.spotify.com/album/0hvT3yIEysuuvkK73vgdcW" },
-    { "title": "beerbongs & bentleys", "by": "Post Malone · 2018", "type": "Album", "spotify": "https://open.spotify.com/album/6trNtQUgC8cgbWcqoMYkOR" },
-    { "title": "Inner Monologue Part 1", "by": "Julia Michaels · 2019", "type": "Album", "spotify": "https://open.spotify.com/album/1xJ7jIK1tT0aVoJw1fPE6r" },
-    { "title": "AURORA", "by": "AURORA", "type": "Artist", "spotify": "https://open.spotify.com/artist/1WgXqy2Dd70QQOU7Ay074N" }
+    { "spotify": "https://open.spotify.com/artist/3BfSHf6fsuUA1KMXLX1Tur" },
+    { "spotify": "https://open.spotify.com/album/5wTUw3RhMlfZhiejI3qmFq", "by": "billy woods" },
+    { "spotify": "https://open.spotify.com/album/7hqPzbQqAKnqFbaKETFie3", "by": "E L U C I D" },
+    { "spotify": "https://open.spotify.com/album/64LkgCfNbLqjclQYCTid8L", "by": "GIVĒON" },
+    { "spotify": "https://open.spotify.com/album/4JAvwK4APPArjIsOdGoJXX", "by": "J. Cole" },
+    { "spotify": "https://open.spotify.com/album/1NfrmcXk8xNennyxQ57JcW", "by": "J. Cole" },
+    { "spotify": "https://open.spotify.com/album/0hvT3yIEysuuvkK73vgdcW", "by": "Kendrick Lamar" },
+    { "spotify": "https://open.spotify.com/album/79ONNoS4M9tfIA1mYLBYVX", "by": "Kendrick Lamar" }
 ]

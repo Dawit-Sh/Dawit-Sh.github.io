@@ -55,13 +55,16 @@
         </div>
 
         <div class="hero-right">
-            <nav class="hero-nav" aria-label="Main">
-                <a href="#about"><span>01</span>About me</a>
-                <a href="#experience"><span>02</span>Experience</a>
-                <a href="#publications"><span>03</span>Publications</a>
-                <a href="#playlists"><span>04</span>Playlists</a>
-                <a href="#contact"><span>05</span>Contact</a>
-            </nav>
+            <div class="hero-top">
+                <nav class="hero-nav" aria-label="Main">
+                    <a href="#about"><span>01</span>About me</a>
+                    <a href="#experience" data-fold="experience"><span>02</span>Experience</a>
+                    <a href="#publications" data-fold="publications"><span>03</span>Publications</a>
+                    <a href="#playlists" data-fold="playlists"><span>04</span>Playlists</a>
+                    <a href="#socials"><span>05</span>Socials</a>
+                </nav>
+                <ul class="socials socials-mini" data-socials aria-label="Socials"></ul>
+            </div>
             <div class="label-block name-label">
                 <h2 class="label">My name<br>is</h2>
                 <p class="micro">Dawit Sharon. Ghost writer, editor and web developer.
@@ -73,7 +76,7 @@
         <h1 class="giant" aria-label="Dawit"><span class="giant-a">DA</span><span class="giant-b">WIT</span></h1>
     </header>
 
-    <!-- 01 / About -->
+    <!-- 01 / About (always open) -->
     <section class="sheet section" id="about">
         <div class="sec-head">
             <span class="sec-num">01</span>
@@ -85,93 +88,106 @@
         </div>
     </section>
 
-    <!-- 02 / Experience -->
-    <section class="sheet section" id="experience">
-        <div class="sec-head">
-            <span class="sec-num">02</span>
-            <h2 class="sec-title">Work<br>experience</h2>
-        </div>
-        <div class="sec-body">
-            <ol class="rows" id="experience-list">
-                <!-- Loaded dynamically from assets/data/experience.json -->
-            </ol>
-        </div>
-    </section>
-
-    <!-- 03 / Publications -->
-    <section class="sheet section" id="publications">
-        <div class="sec-head">
-            <span class="sec-num">03</span>
-            <h2 class="sec-title">Publi&shy;cations</h2>
-        </div>
-        <div class="sec-body">
-            <ol class="rows" id="publications-list">
-                <!-- Loaded dynamically from assets/data/publications.json -->
-            </ol>
-        </div>
-    </section>
-
-    <!-- 04 / Playlists -->
-    <section class="sheet section playlists" id="playlists">
-        <div class="sec-head">
-            <span class="sec-num">04</span>
-            <h2 class="sec-title">On<br>repeat</h2>
-            <p class="micro">What I keep coming back to, and the songs I'd play you first.</p>
-        </div>
-        <div class="sec-body">
-            <div class="deck" id="deck">
-                <div class="deck-top">
-                    <span class="deck-tag">Now playing</span>
-                    <span class="deck-count" id="deck-count">04.1</span>
-                </div>
-                <p class="deck-title" id="deck-title">Press play</p>
-                <p class="deck-by" id="deck-by">&nbsp;</p>
-                <div class="deck-controls">
-                    <button type="button" class="deck-btn" id="deck-prev" aria-label="Previous">◀◀</button>
-                    <button type="button" class="deck-btn deck-play" id="deck-play" aria-label="Play">▶</button>
-                    <button type="button" class="deck-btn" id="deck-next" aria-label="Next">▶▶</button>
-                    <div class="deck-bar" aria-hidden="true"><div class="deck-bar-fill" id="deck-bar"></div></div>
-                    <span class="deck-time" id="deck-time">0:00</span>
-                </div>
-                <div class="deck-embed">
-                    <div id="spotify-embed"></div>
-                </div>
+    <!-- 02-04 / Folds: closed strips that unfold on click -->
+    <section class="sheet fold" id="experience">
+        <h2 class="fold-h">
+            <button type="button" class="fold-head" aria-expanded="false" aria-controls="experience-body">
+                <span class="fold-num">02</span>
+                <span class="fold-title">Work experience</span>
+                <span class="fold-meta" id="experience-meta"></span>
+                <span class="fold-icon" aria-hidden="true"></span>
+            </button>
+        </h2>
+        <div class="fold-body" id="experience-body" role="region" aria-label="Work experience">
+            <div class="fold-inner">
+                <ol class="rows stagger" id="experience-list">
+                    <!-- Loaded dynamically from assets/data/experience.json -->
+                </ol>
             </div>
-
-            <ol class="rows tracks" id="playlist-list">
-                <!-- Loaded dynamically from assets/data/playlists.json -->
-            </ol>
-
-            <!-- Hidden while the email is off the site. To turn it back on: remove "hidden" and set data-to to the address. -->
-            <form class="recommend" id="recommend" data-to="" hidden>
-                <h3 class="label">Recommend<br>a song</h3>
-                <p class="micro">Heard something I should? Leave it here. It opens your email, addressed to me.</p>
-                <div class="fields">
-                    <label><span>Song</span><input name="song" required></label>
-                    <label><span>Artist</span><input name="artist" required></label>
-                    <label><span>Your name</span><input name="name"></label>
-                    <label class="wide"><span>Why</span><input name="why"></label>
-                </div>
-                <button type="submit" class="btn">Recommend →</button>
-            </form>
         </div>
     </section>
 
-    <!-- 05 / Contact -->
-    <footer class="sheet section contact" id="contact">
-        <div class="sec-head">
+    <section class="sheet fold" id="publications">
+        <h2 class="fold-h">
+            <button type="button" class="fold-head" aria-expanded="false" aria-controls="publications-body">
+                <span class="fold-num">03</span>
+                <span class="fold-title">Publications</span>
+                <span class="fold-meta" id="publications-meta"></span>
+                <span class="fold-icon" aria-hidden="true"></span>
+            </button>
+        </h2>
+        <div class="fold-body" id="publications-body" role="region" aria-label="Publications">
+            <div class="fold-inner">
+                <ol class="rows stagger" id="publications-list">
+                    <!-- Loaded dynamically from assets/data/publications.json -->
+                </ol>
+            </div>
+        </div>
+    </section>
+
+    <section class="sheet fold" id="playlists">
+        <h2 class="fold-h">
+            <button type="button" class="fold-head" aria-expanded="false" aria-controls="playlists-body">
+                <span class="fold-num">04</span>
+                <span class="fold-title">On repeat</span>
+                <span class="fold-meta" id="playlists-meta"></span>
+                <span class="fold-icon" aria-hidden="true"></span>
+            </button>
+        </h2>
+        <div class="fold-body" id="playlists-body" role="region" aria-label="Playlists">
+            <div class="fold-inner">
+                <div class="pl">
+                    <div class="deck" id="deck">
+                        <div class="deck-top">
+                            <span class="deck-tag">Now playing</span>
+                            <span class="deck-count" id="deck-count">04.1</span>
+                        </div>
+                        <p class="deck-title" id="deck-title">Press play</p>
+                        <p class="deck-by" id="deck-by">&nbsp;</p>
+                        <div class="deck-controls">
+                            <button type="button" class="deck-btn" id="deck-prev" aria-label="Previous">◀◀</button>
+                            <button type="button" class="deck-btn deck-play" id="deck-play" aria-label="Play">▶</button>
+                            <button type="button" class="deck-btn" id="deck-next" aria-label="Next">▶▶</button>
+                            <div class="deck-bar" aria-hidden="true"><div class="deck-bar-fill" id="deck-bar"></div></div>
+                            <span class="deck-time" id="deck-time">0:00</span>
+                        </div>
+                        <div class="deck-embed">
+                            <div id="spotify-embed"></div>
+                        </div>
+                    </div>
+
+                    <div class="pl-side">
+                        <div class="pl-filters" id="pl-filters" role="group" aria-label="Filter"></div>
+                        <ul class="covers stagger" id="playlist-list">
+                            <!-- Loaded dynamically from assets/data/playlists.json -->
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Hidden while the email is off the site. To turn it back on: remove "hidden" and set data-to to the address. -->
+                <form class="recommend" id="recommend" data-to="" hidden>
+                    <h3 class="label">Recommend<br>a song</h3>
+                    <p class="micro">Heard something I should? Leave it here. It opens your email, addressed to me.</p>
+                    <div class="fields">
+                        <label><span>Song</span><input name="song" required></label>
+                        <label><span>Artist</span><input name="artist" required></label>
+                        <label><span>Your name</span><input name="name"></label>
+                        <label class="wide"><span>Why</span><input name="why"></label>
+                    </div>
+                    <button type="submit" class="btn">Recommend →</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- 05 / Socials -->
+    <footer class="sheet socials-foot" id="socials">
+        <div class="foot-head">
             <span class="sec-num">05</span>
-            <h2 class="sec-title">Say<br>ሰላም</h2>
+            <h2 class="foot-title">Find me</h2>
         </div>
-        <div class="sec-body">
-            <ul class="contact-list">
-                <!-- Email hidden for now. To bring it back, add an Email row here: <li><a href="mailto:ADDRESS"><span>Email</span>ADDRESS</a></li> -->
-                <li><a href="https://t.me/chill_vibez" target="_blank" rel="noopener noreferrer"><span>Telegram</span>@chill_vibez</a></li>
-                <li><a href="https://github.com/Dawit-Sh" target="_blank" rel="noopener noreferrer"><span>GitHub</span>Dawit-Sh</a></li>
-                <li><a href="https://tealeavesthoughts.blog" target="_blank" rel="noopener noreferrer"><span>Blog</span>Tea Leaves &amp; Thoughts</a></li>
-            </ul>
-            <p class="micro fine">© Dawit Sharon · <a href="#top">Back to top ↑</a></p>
-        </div>
+        <ul class="socials socials-big" data-socials data-labels aria-label="Socials"></ul>
+        <p class="micro fine">© Dawit Sharon · <a href="#top">Back to top ↑</a></p>
     </footer>
 
     <script src="assets/js/main.js"></script>

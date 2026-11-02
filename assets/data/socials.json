@@ -1,10 +1,8 @@
 [
     { "name": "GitHub", "icon": "github", "url": "https://github.com/Dawit-Sh" },
-    { "name": "Telegram", "icon": "telegram", "url": "https://t.me/chill_vibez" },
+    { "name": "Telegram", "icon": "telegram", "url": "https://t.me/DaveDumps" },
     { "name": "Blog", "icon": "pen-nib", "url": "https://tealeavesthoughts.blog" },
-    { "name": "X", "icon": "x-twitter", "url": "" },
-    { "name": "Instagram", "icon": "instagram", "url": "" },
-    { "name": "Letterboxd", "icon": "letterboxd", "url": "" },
+    { "name": "Letterboxd", "icon": "letterboxd", "url": "https://boxd.it/7ztrz" },
     { "name": "Goodreads", "icon": "goodreads", "url": "" },
     { "name": "Spotify", "icon": "spotify", "url": "" },
     { "name": "LinkedIn", "icon": "linkedin", "url": "" },

@@ -22,8 +22,12 @@ html {
 
 body {
     min-height: 100vh;
-    padding: clamp(16px, 5vw, 72px) clamp(16px, 4vw, 64px);
-    background: radial-gradient(ellipse at 75% 20%, #5b5b5b 0%, #2c2c2c 45%, #161616 100%) fixed;
+    padding: 0;
+    /* white page with a dot-matrix grid behind everything */
+    background-color: var(--paper);
+    background-image: radial-gradient(rgba(10, 10, 10, 0.22) 1.1px, transparent 1.3px);
+    background-size: 18px 18px;
+    background-attachment: fixed;
     color: var(--ink);
     font-family: var(--text), var(--ethiopic);
     -webkit-font-smoothing: antialiased;
@@ -46,10 +50,9 @@ a {
 .sheet {
     position: relative;
     width: 100%;
-    max-width: 1280px;
-    margin: 0 auto clamp(24px, 4vw, 56px);
-    background: var(--paper);
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45);
+    max-width: 1440px;
+    margin: 0 auto;
+    border-bottom: var(--rule);
 }
 
 /* Small uppercase text, like the poster's body copy */
@@ -637,9 +640,6 @@ a {
 
 /* ---------- Phone and narrow screens ---------- */
 @media (max-width: 760px) {
-    body {
-        padding: 16px;
-    }
 
     .hero {
         display: block;

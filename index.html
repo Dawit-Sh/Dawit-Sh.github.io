@@ -33,7 +33,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;700;800&family=Noto+Sans+Ethiopic:wght@700;800&display=swap">
-    <link rel="stylesheet" href="assets/css/main.css?v=20261103g">
+    <link rel="stylesheet" href="assets/css/main.css?v=20261103h">
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
 </head>
 
@@ -47,11 +47,6 @@
         </div>
 
         <div class="hero-mid">
-            <!-- Addis Ababa right now: clock ticks in main.js, weather from Open-Meteo -->
-            <div class="now" id="now">
-                <p class="micro now-row"><span class="now-place"><span class="now-dot" aria-hidden="true"></span>Addis Ababa</span><span class="now-side" id="now-weather"></span></p>
-                <p class="now-row"><span class="now-time"><span id="now-time">--:--</span><span class="now-ampm" id="now-ampm"></span></span><span class="micro now-side" id="now-eth"></span></p>
-            </div>
             <div class="label-block">
                 <h2 class="label ethiopic">ሰላም</h2>
                 <p class="micro">Yes, it's another portfolio. But at least this one has good taste.
@@ -76,6 +71,20 @@
                 <p class="micro">Dawit Sharon. UGC video editor, writer and programmer.
                     This is my portfolio.</p>
                 <a href="assets/dawit-sharon-resume.pdf" class="resume-btn" download="Dawit-Sharon-Resume.pdf"><span>Resume</span><span class="resume-arrow" aria-hidden="true">↓</span></a>
+            </div>
+            <!-- Addis Ababa right now: clock ticks in main.js, weather from Open-Meteo -->
+            <div class="now" id="now">
+                <p class="now-head"><span class="now-dot" aria-hidden="true"></span>Addis Ababa, right now</p>
+                <div class="now-grid">
+                    <div>
+                        <p class="now-big"><span id="now-time">--:--</span><span class="now-ampm" id="now-ampm"></span></p>
+                        <p class="now-sub" id="now-eth"></p>
+                    </div>
+                    <div class="now-wx">
+                        <p class="now-big" id="now-temp"></p>
+                        <p class="now-sub" id="now-weather"></p>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -245,7 +254,7 @@
         <span class="mini-bar" aria-hidden="true"><i id="mini-bar"></i></span>
     </aside>
 
-    <script src="assets/js/main.js?v=20261103g"></script>
+    <script src="assets/js/main.js?v=20261103h"></script>
     <script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
 </body>
 

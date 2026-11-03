@@ -688,6 +688,7 @@ const nowTime = document.getElementById('now-time');
 const nowAmpm = document.getElementById('now-ampm');
 const nowEth = document.getElementById('now-eth');
 const nowWeather = document.getElementById('now-weather');
+const nowTemp = document.getElementById('now-temp');
 
 function addisClock() {
   const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', {
@@ -736,7 +737,8 @@ async function addisWeather() {
       return;
     }
   }
-  nowWeather.textContent = `${w.temp}°C, ${weatherWords(w.code)}`;
+  nowTemp.textContent = `${w.temp}°C`;
+  nowWeather.textContent = weatherWords(w.code);
 }
 
 if (nowTime) {

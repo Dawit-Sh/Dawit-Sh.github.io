@@ -153,23 +153,30 @@ a {
     border-top: var(--rule);
 }
 
-/* Addis Ababa now: sits in the empty top of the middle column, above ሰላም */
+/* Addis Ababa now: big and bold in the right column, under the Resume button */
 .now {
     position: absolute;
-    left: 6.5%;
+    /* starts clear of the T in WIT, which reaches into this column */
+    left: 20%;
     right: 6%;
-    top: 1.5%;
+    bottom: 8%;
+    padding-top: 0.9em;
+    border-top: 3px solid var(--ink);
 }
 
-.now-place {
+.now-head {
     display: flex;
     align-items: center;
     gap: 0.6em;
+    font-size: clamp(11px, 0.95cqw, 15px);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
 }
 
 .now-dot {
-    width: 7px;
-    height: 7px;
+    width: 0.6em;
+    height: 0.6em;
     flex: none;
     background: var(--red);
     border-radius: 50%;
@@ -180,32 +187,41 @@ a {
     50% { opacity: 0.15; }
 }
 
-.now-row {
+.now-grid {
     display: flex;
-    align-items: baseline;
     justify-content: space-between;
-    gap: 0.3em 0.8em;
+    align-items: flex-end;
+    gap: 1em;
+    margin-top: 0.5em;
 }
 
-.now-row + .now-row {
-    margin-top: 0.25em;
-}
-
-.now-time {
+.now-big {
     font-family: var(--display);
-    font-size: clamp(22px, 2.4cqw, 38px);
-    line-height: 0.95;
+    font-size: clamp(46px, 5.6cqw, 92px);
+    line-height: 0.85;
     white-space: nowrap;
 }
 
-.now-side {
+.now-ampm {
+    margin-left: 0.12em;
+    font-size: 0.38em;
+    color: var(--red);
+}
+
+.now-wx {
     text-align: right;
 }
 
-.now-ampm {
-    margin-left: 0.2em;
-    font-size: 0.5em;
+.now-wx .now-big {
     color: var(--red);
+}
+
+.now-sub {
+    margin-top: 0.55em;
+    font-size: clamp(10px, 0.85cqw, 13px);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
 }
 
 .hero-mid .label-block {
@@ -1754,12 +1770,18 @@ li:not(.has-art) .cover-art img {
 
     .now {
         position: static;
-        padding: 18px 16px;
-        border-bottom: var(--rule);
+        grid-column: 1 / -1;
+        padding: 18px 16px 20px;
+        border-top: var(--rule);
     }
 
-    .now-time {
-        font-size: 44px;
+    .now-head,
+    .now-sub {
+        font-size: 11px;
+    }
+
+    .now-big {
+        font-size: 58px;
     }
 
     .hero-mid .label {

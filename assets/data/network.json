@@ -1,8 +1,7 @@
 [
-    {
-        "url": "https://kinfish.dev",
-        "name": "KinfeMichael Tariku",
-        "ring": "find",
-        "note": "The playlists strip on this site started from his."
-    }
+    { "url": "https://kinfish.dev", "name": "KinfeMichael Tariku", "ring": "find" },
+    { "url": "https://yohannestz.com", "name": "Yohannes Tezera", "ring": "find" },
+    { "url": "https://besufikadmicheal.pro.et", "name": "Besufikad Micheal", "ring": "find" },
+    { "url": "https://www.lykamimics.com", "name": "Lyka Mimics", "ring": "find" },
+    { "url": "https://www.robi.work", "name": "Robi", "ring": "find" }
 ]

@@ -118,9 +118,11 @@ a {
 
 .portrait {
     position: absolute;
-    left: 9%;
-    bottom: 0;
-    height: 90%;
+    /* the photo's top edge is a straight crop through the hair, so it sits on
+       the rule under the top block (17%) instead of floating */
+    left: 0;
+    top: 17%;
+    height: 83%;
     width: auto;
     max-width: none;
     filter: contrast(1.08);

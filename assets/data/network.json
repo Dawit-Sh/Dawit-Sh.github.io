@@ -1,8 +1,8 @@
 [
-    { "url": "https://kinfish.dev", "name": "KinfeMichael Tariku", "ring": "find" },
-    { "url": "https://yohannestz.com", "name": "Yohannes Tezera", "ring": "find" },
-    { "url": "https://besufikadmicheal.pro.et", "name": "Besufikad Micheal", "ring": "find" },
-    { "url": "https://www.lykamimics.com", "name": "Lyka Mimics", "ring": "find" },
-    { "url": "https://www.robi.work", "name": "Robi", "ring": "find" },
-    { "url": "https://yewe.work", "name": "Yewe", "ring": "find" }
+    { "url": "https://www.lykamimics.com", "name": "Lyka Mimics", "ring": 1 },
+    { "url": "https://besufikadmicheal.pro.et", "name": "Besufikad Micheal", "ring": 1 },
+    { "url": "https://yohannestz.com", "name": "Yohannes Tezera", "ring": 1 },
+    { "url": "https://kinfish.dev", "name": "KinfeMichael Tariku", "ring": 2 },
+    { "url": "https://www.robi.work", "name": "Robi", "ring": 3 },
+    { "url": "https://yewe.work", "name": "Yewe", "ring": 4 }
 ]

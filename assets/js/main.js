@@ -165,7 +165,7 @@ async function loadPublications() {
 }
 
 // ---------- Network: assets/data/network.json, drawn as a map around me ----------
-// ring "know" = people I know (inner ring), anything else = people I find interesting (outer ring)
+// "ring": 1 is the inner ring (people I know), 2, 3... sit further out; "know" / "find" also work (1 / 2)
 const networkList = document.getElementById('network-list');
 const networkMap = document.getElementById('network-map');
 const networkJump = document.getElementById('network-jump');
@@ -180,13 +180,6 @@ function initialsOf(name) {
   return (words.length > 1 ? words[0][0] + words[words.length - 1][0] : words[0]?.slice(0, 2) || '?').toUpperCase();
 }
 
-// a small steady number per site, so a node keeps its spot between visits
-function hashOf(text) {
-  let h = 2166136261;
-  for (const c of String(text)) h = Math.imul(h ^ c.charCodeAt(0), 16777619);
-  return (h >>> 0) / 4294967295;
-}
-
 function svgEl(tag, attrs, parent) {
   const el = document.createElementNS(SVG_NS, tag);
   Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
@@ -196,37 +189,32 @@ function svgEl(tag, attrs, parent) {
 
 function drawNetwork(people) {
   const C = 200;
-  const rings = { know: 92, find: 158 };
+  const count = Math.max(2, ...people.map((p) => p.ringNo));
+  const radius = (n) => 78 + ((n - 1) * (170 - 78)) / (count - 1);
   networkMap.replaceChildren();
-  Object.entries(rings).forEach(([ring, r]) => {
-    svgEl('circle', { cx: C, cy: C, r, class: `net-ring net-ring-${ring}` }, networkMap);
-  });
+  for (let n = 1; n <= count; n++) {
+    svgEl('circle', { cx: C, cy: C, r: radius(n), class: `net-ring net-ring-${n}` }, networkMap);
+  }
 
   const wires = svgEl('g', { class: 'net-wires' }, networkMap);
   const nodes = svgEl('g', { class: 'net-nodes' }, networkMap);
-  const byRing = { know: [], find: [] };
-  people.forEach((p, i) => byRing[p.ring === 'know' ? 'know' : 'find'].push({ ...p, i }));
 
-  Object.entries(byRing).forEach(([ring, list], ringIndex) => {
-    const r = rings[ring];
-    const start = ringIndex ? -Math.PI / 2 + 0.6 : -Math.PI / 2;
-    list.forEach((p, k) => {
-      const jitter = (hashOf(p.host) - 0.5) * (list.length > 1 ? Math.PI / list.length * 0.5 : 0.8);
-      const a = start + (k / Math.max(list.length, 1)) * Math.PI * 2 + jitter;
-      const x = C + Math.cos(a) * r;
-      const y = C + Math.sin(a) * r;
-      const len = Math.hypot(x - C, y - C);
-      svgEl('line', {
-        x1: C, y1: C, x2: x.toFixed(1), y2: y.toFixed(1), class: 'net-wire', 'data-k': p.i,
-        style: `--len:${len.toFixed(0)};--i:${p.i}`,
-      }, wires);
-      const link = svgEl('a', { href: p.url, target: '_blank', rel: 'noopener noreferrer', tabindex: '-1',
-        class: 'net-node', 'data-k': p.i, style: `--i:${p.i}` }, nodes);
-      svgEl('title', {}, link).textContent = `${p.name} · ${p.host}`;
-      svgEl('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: 19 }, link);
-      svgEl('text', { x: x.toFixed(1), y: (y + 5.5).toFixed(1), 'text-anchor': 'middle' }, link)
-        .textContent = initialsOf(p.name);
-    });
+  // golden-angle steps spread everyone around me without two landing on one bearing
+  people.forEach((p, i) => {
+    const a = -Math.PI / 2 + i * 2.39996;
+    const r = radius(p.ringNo);
+    const x = C + Math.cos(a) * r;
+    const y = C + Math.sin(a) * r;
+    svgEl('line', {
+      x1: C, y1: C, x2: x.toFixed(1), y2: y.toFixed(1), class: 'net-wire', 'data-k': i,
+      style: `--len:${r.toFixed(0)};--i:${i}`,
+    }, wires);
+    const link = svgEl('a', { href: p.url, target: '_blank', rel: 'noopener noreferrer', tabindex: '-1',
+      class: 'net-node', 'data-k': i, style: `--i:${i}` }, nodes);
+    svgEl('title', {}, link).textContent = `${p.name} · ${p.host}`;
+    svgEl('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: 19 }, link);
+    svgEl('text', { x: x.toFixed(1), y: (y + 5.5).toFixed(1), 'text-anchor': 'middle' }, link)
+      .textContent = initialsOf(p.name);
   });
 
   // me in the middle
@@ -249,7 +237,8 @@ async function loadNetwork() {
     const people = (Array.isArray(data) ? data : [])
       .map((p) => (typeof p === 'string' ? { url: p } : p))
       .filter((p) => p && p.url)
-      .map((p) => ({ ...p, host: hostOf(p.url), name: p.name || hostOf(p.url) }));
+      .map((p) => ({ ...p, host: hostOf(p.url), name: p.name || hostOf(p.url),
+        ringNo: Math.max(1, Math.round(Number(p.ring)) || (p.ring === 'know' ? 1 : 2)) }));
 
     drawNetwork(people);
 
@@ -264,7 +253,7 @@ async function loadNetwork() {
         <a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">
           <span class="row-meta">05.${i + 1}</span>
           <span class="net-host">${esc(p.host)}</span>
-          <span class="net-name">${esc(p.name)}<em>${p.ring === 'know' ? 'Know them' : 'Find them interesting'}</em></span>
+          <span class="net-name">${esc(p.name)}<em>${p.ringNo === 1 ? 'Know them' : 'Find them interesting'}</em></span>
           ${p.note ? `<span class="net-note">${esc(p.note)}</span>` : ''}
           <span class="net-arrow" aria-hidden="true">↗</span>
         </a>
@@ -283,7 +272,7 @@ async function loadNetwork() {
       node.addEventListener('mouseleave', () => hotNetwork(k, false));
     });
 
-    const known = people.filter((p) => p.ring === 'know').length;
+    const known = people.filter((p) => p.ringNo === 1).length;
     setMeta('network-meta', [`${people.length} ${people.length === 1 ? 'link' : 'links'}`,
       known ? `${known} I know` : ''].filter(Boolean).join(' · '));
 

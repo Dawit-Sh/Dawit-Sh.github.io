@@ -257,21 +257,29 @@ function drawNetwork(people) {
   const nodes = svgEl('g', { class: 'net-nodes' }, networkMap);
 
   // golden-angle steps spread everyone around me without two landing on one bearing
-  people.forEach((p, i) => {
+  const spots = people.map((p, i) => {
     const a = -Math.PI / 2 + i * 2.39996;
     const r = radius(p.ringNo);
-    const x = C + Math.cos(a) * r;
-    const y = C + Math.sin(a) * r;
+    return { x: C + Math.cos(a) * r, y: C + Math.sin(a) * r, len: r };
+  });
+  // the circles shrink as the map fills up, so they never sit on top of each other
+  let gap = Infinity;
+  spots.forEach((s, i) => spots.slice(i + 1).forEach((t) => { gap = Math.min(gap, Math.hypot(s.x - t.x, s.y - t.y)); }));
+  const dot = Math.max(9, Math.min(19, gap / 2 - 2));
+
+  people.forEach((p, i) => {
+    const { x, y, len } = spots[i];
+    const step = Math.min(i, 12);   // keep the draw-in short however long the list gets
     svgEl('line', {
       x1: C, y1: C, x2: x.toFixed(1), y2: y.toFixed(1), class: 'net-wire', 'data-k': i,
-      style: `--len:${r.toFixed(0)};--i:${i}`,
+      style: `--len:${len.toFixed(0)};--i:${step}`,
     }, wires);
     const link = svgEl('a', { href: p.url, target: '_blank', rel: 'noopener noreferrer', tabindex: '-1',
-      class: 'net-node', 'data-k': i, style: `--i:${i}` }, nodes);
+      class: 'net-node', 'data-k': i, style: `--i:${step}` }, nodes);
     svgEl('title', {}, link).textContent = `${p.name} · ${p.host}`;
-    svgEl('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: 19 }, link);
-    svgEl('text', { x: x.toFixed(1), y: (y + 5.5).toFixed(1), 'text-anchor': 'middle' }, link)
-      .textContent = initialsOf(p.name);
+    svgEl('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: dot.toFixed(1) }, link);
+    svgEl('text', { x: x.toFixed(1), y: (y + dot * 0.29).toFixed(1), 'text-anchor': 'middle',
+      style: `font-size:${(dot * 0.9).toFixed(1)}px` }, link).textContent = initialsOf(p.name);
   });
 
   // me in the middle
@@ -305,14 +313,16 @@ async function loadNetwork() {
       return;
     }
 
-    networkList.innerHTML = people.map((p, i) => `
+    // compact tiles in ring order (file order inside a ring), so a long list stays short and easy to scan
+    const order = people.map((p, i) => ({ p, i })).sort((a, b) => a.p.ringNo - b.p.ringNo || a.i - b.i);
+    networkList.innerHTML = order.map(({ p, i }) => `
       <li class="net-row" data-k="${i}">
         <a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">
-          <span class="row-meta">05.${i + 1}</span>
-          <span class="net-host">${esc(p.host)}</span>
-          <span class="net-name">${esc(p.name)}</span>
-          ${p.note ? `<span class="net-note">${esc(p.note)}</span>` : ''}
+          <span class="row-meta">05.${i + 1}<em>Ring ${p.ringNo}</em></span>
           <span class="net-arrow" aria-hidden="true">↗</span>
+          <span class="net-name">${esc(p.name)}</span>
+          <span class="net-host">${esc(p.host)}</span>
+          ${p.note ? `<span class="net-note">${esc(p.note)}</span>` : ''}
         </a>
       </li>
     `).join('');

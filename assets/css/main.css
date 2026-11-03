@@ -1145,7 +1145,7 @@ li:not(.has-art) .cover-art img {
 
 .net {
     display: grid;
-    grid-template-columns: minmax(280px, 40%) 1fr;
+    grid-template-columns: minmax(260px, 36%) 1fr;
     gap: clamp(18px, 2.6cqw, 40px);
     align-items: start;
 }
@@ -1303,28 +1303,48 @@ li:not(.has-art) .cover-art img {
 
 .net-list {
     list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr));
+    border-top: var(--rule);
+    border-left: var(--rule);
+    max-height: min(560px, 64vh);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--ink) transparent;
+}
+
+.net-row {
+    background: var(--paper);
+    border-right: var(--rule);
     border-bottom: var(--rule);
+}
+
+.net-row .row-meta em {
+    margin-left: 0.8em;
+    font-style: normal;
+    color: var(--ink);
+    opacity: 0.55;
 }
 
 .net-row a {
     position: relative;
     isolation: isolate;
     display: grid;
-    grid-template-columns: minmax(48px, 10%) 1fr auto;
+    grid-template-columns: 1fr auto;
     grid-template-areas:
-        "meta host arrow"
-        ".    name arrow"
-        ".    note arrow";
-    gap: 0 clamp(12px, 2cqw, 28px);
-    align-items: baseline;
-    padding: 16px 12px 17px 0;
-    border-top: var(--rule);
+        "meta arrow"
+        "name name"
+        "host host"
+        "note note";
+    align-items: start;
+    height: 100%;
+    padding: 12px 14px 14px;
     color: inherit;
     text-decoration: none;
     overflow: hidden;
 }
 
-/* a red bar sweeps across the row under the text */
+/* a red bar sweeps across the tile under the text */
 .net-row a::before {
     content: "";
     position: absolute;
@@ -1348,7 +1368,6 @@ li:not(.has-art) .cover-art img {
 
 .net-row .row-meta {
     grid-area: meta;
-    padding-left: 10px;
     transition: color 0.2s;
 }
 
@@ -1357,47 +1376,54 @@ li:not(.has-art) .cover-art img {
     color: var(--ink);
 }
 
+.net-name {
+    grid-area: name;
+    margin-top: 10px;
+    font-family: var(--display);
+    font-size: clamp(24px, 2.1cqw, 32px);
+    line-height: 0.95;
+    transition: letter-spacing 0.45s var(--ease-out);
+}
+
+.net-row:hover .net-name,
+.net-row.is-hot .net-name {
+    letter-spacing: 0.02em;
+}
+
 .net-host {
     grid-area: host;
-    font-family: var(--display);
-    font-size: clamp(32px, 3.6cqw, 56px);
-    line-height: 0.92;
-    letter-spacing: 0.005em;
+    margin-top: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #555;
     overflow-wrap: anywhere;
-    transition: letter-spacing 0.45s var(--ease-out);
+    transition: color 0.2s;
 }
 
 .net-row:hover .net-host,
 .net-row.is-hot .net-host {
-    letter-spacing: 0.03em;
-}
-
-.net-name {
-    grid-area: name;
-    margin-top: 6px;
-    font-size: 12px;
-    font-weight: 800;
-    text-transform: uppercase;
+    color: var(--ink);
 }
 
 .net-note {
     grid-area: note;
     margin-top: 6px;
-    font-size: 14px;
-    line-height: 1.5;
+    font-size: 13px;
+    line-height: 1.45;
 }
 
 .net-arrow {
     grid-area: arrow;
-    align-self: center;
-    font-size: 26px;
+    font-size: 18px;
     font-weight: 800;
+    line-height: 1;
     transition: transform 0.35s var(--ease-out);
 }
 
 .net-row:hover .net-arrow,
 .net-row.is-hot .net-arrow {
-    transform: translate(4px, -4px) rotate(45deg);
+    transform: translate(3px, -3px) rotate(45deg);
 }
 
 /* ---------- Mini player ---------- */
@@ -1891,19 +1917,13 @@ li:not(.has-art) .cover-art img {
         padding: 0 16px;
     }
 
-    .net-row a {
-        grid-template-columns: 1fr auto;
-        grid-template-areas:
-            "meta arrow"
-            "host arrow"
-            "name arrow"
-            "note arrow";
-        padding-left: 10px;
+    .net-list {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        max-height: 66vh;
     }
 
-    .net-row .row-meta {
-        padding-left: 0;
-        margin-bottom: 4px;
+    .net-name {
+        font-size: 24px;
     }
 
     .deck-title {

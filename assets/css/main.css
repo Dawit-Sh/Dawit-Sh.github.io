@@ -711,6 +711,78 @@ a {
     font-weight: 600;
 }
 
+/* ---------- Experience photos: a picture beside the row you are on ---------- */
+#experience .fold-inner {
+    position: relative;
+}
+
+.exp-stage {
+    position: absolute;
+    top: 0;
+    left: var(--gutter);
+    width: min(340px, calc(30% - var(--gutter) * 2));
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    box-shadow: 10px 10px 0 var(--red);
+    opacity: 0;
+    transform: translateY(var(--y, 0px));
+    transition: transform 0.55s var(--ease-snap), opacity 0.3s;
+    pointer-events: none;
+}
+
+.exp-stage.is-on {
+    opacity: 1;
+}
+
+.exp-photo {
+    position: relative;
+    aspect-ratio: 5 / 4;
+    overflow: hidden;
+    background: var(--ink);
+}
+
+.exp-photo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(1) contrast(1.08);
+    animation: exp-drift 9s ease-in-out infinite alternate;
+}
+
+/* the cover's translucent red block, laid over each photo */
+.exp-photo::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 24%;
+    width: 30%;
+    height: 52%;
+    background: var(--red);
+    mix-blend-mode: multiply;
+}
+
+.exp-stage.is-swapping .exp-photo {
+    animation: deck-in 0.5s var(--ease-snap) both;
+}
+
+@keyframes exp-drift {
+    from { transform: scale(1.04) translate(0, 0); }
+    to { transform: scale(1.14) translate(-2.5%, -2%); }
+}
+
+.exp-cap {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px 10px;
+    border-top: 2px solid var(--ink);
+}
+
+.exp-cap span:first-child {
+    color: var(--red);
+}
+
 /* ---------- Playlists ---------- */
 .pl {
     display: grid;
@@ -1645,6 +1717,10 @@ li:not(.has-art) .cover-art img {
     .pl,
     .net {
         grid-template-columns: 1fr;
+    }
+
+    .exp-stage {
+        display: none;
     }
 
     #network .fold-inner {

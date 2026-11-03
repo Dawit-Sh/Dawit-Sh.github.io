@@ -2,36 +2,43 @@
     {
         "role": "UGC Video Editor",
         "company": "Skincare, Hair & Beauty Ads · Remote",
-        "date": "May 2026 - Present"
+        "date": "May 2026 - Present",
+        "art": "editor"
     },
     {
         "role": "Ghost writer and editor",
         "company": "Writing & Private Client Services",
-        "date": "2025 - May 2026"
+        "date": "2025 - May 2026",
+        "art": "pen"
     },
     {
         "role": "Web Developer (NGO Company Sites)",
         "company": "Freelance Project",
-        "date": "2024"
+        "date": "2024",
+        "art": "web"
     },
     {
         "role": "Software Maintainer (Legacy C/C++)",
         "company": "Japan, Private",
-        "date": "2024"
+        "date": "2024",
+        "art": "legacy"
     },
     {
         "role": "Full-stack Developer (Talent Marketplace)",
         "company": "Freelance Project",
-        "date": "2023"
+        "date": "2023",
+        "art": "stack"
     },
     {
         "role": "Frontend Developer (Fitness Platform)",
         "company": "Freelance Project",
-        "date": "Sep 2023 - 2024"
+        "date": "Sep 2023 - 2024",
+        "art": "fitness"
     },
     {
         "role": "Apprentice Carpenter",
         "company": "Carpentry & Woodwork",
-        "date": "2021 - 2022"
+        "date": "2021 - 2022",
+        "art": "carpentry"
     }
 ]

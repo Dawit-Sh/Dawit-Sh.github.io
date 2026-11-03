@@ -98,7 +98,7 @@ async function loadExperience() {
     }
 
     experienceList.innerHTML = data.map((exp, i) => `
-      <li class="row">
+      <li class="row" data-art="${esc(exp.art || artFor(exp.role))}">
         <span class="row-meta">02.${i + 1}</span>
         <div class="row-main">
           <h3>${esc(exp.role)}</h3>
@@ -110,6 +110,7 @@ async function loadExperience() {
       </li>
     `).join('');
     numberRows(experienceList);
+    setupExpStage();
 
     const years = data.flatMap((exp) => String(exp.date).match(/\d{4}/g) || []).map(Number);
     const present = data.some((exp) => /present/i.test(exp.date));
@@ -118,6 +119,61 @@ async function loadExperience() {
   } catch (error) {
     showError(experienceList, 'work experience', error);
   }
+}
+
+// A photo for each role (assets/exp/<art>.webp); "art" in experience.json picks one, else the role's words do
+function artFor(role) {
+  const r = String(role).toLowerCase();
+  if (/ghost|writ/.test(r)) return 'pen';
+  if (/ugc|video/.test(r)) return 'editor';
+  if (/carpent|wood/.test(r)) return 'carpentry';
+  if (/legacy|c\/c\+\+|maintain/.test(r)) return 'legacy';
+  if (/full-stack|marketplace/.test(r)) return 'stack';
+  if (/fitness|frontend/.test(r)) return 'fitness';
+  return 'web';
+}
+
+// The stage glides to the row under the pointer and shows that row's photo
+function setupExpStage() {
+  const stage = document.getElementById('exp-stage');
+  if (!stage) return;
+  const img = stage.querySelector('img');
+  const [capNum, capRole] = stage.querySelectorAll('.exp-cap span');
+  const rows = [...experienceList.querySelectorAll('.row')];
+  let current = null;
+
+  function place(row) {
+    const list = experienceList;
+    const top = list.offsetTop;
+    const max = top + list.offsetHeight - stage.offsetHeight;
+    const y = row.offsetTop + row.offsetHeight / 2 - stage.offsetHeight / 2;
+    stage.style.setProperty('--y', `${Math.max(top, Math.min(max, y))}px`);
+  }
+
+  function show(row) {
+    if (row !== current) {
+      current = row;
+      img.src = `assets/exp/${row.dataset.art}.webp`;
+      capNum.textContent = row.querySelector('.row-meta')?.textContent || '';
+      capRole.textContent = row.querySelector('h3')?.textContent || '';
+      stage.classList.remove('is-swapping');
+      void stage.offsetWidth;
+      stage.classList.add('is-swapping');
+    }
+    place(row);
+    stage.classList.add('is-on');
+  }
+
+  rows.forEach((row) => {
+    row.addEventListener('mouseenter', () => show(row));
+    row.addEventListener('focusin', () => show(row));
+  });
+  // the first role is up when the strip opens; the rest load then too, so hovering is instant
+  foldOpeners.experience = () => setTimeout(() => {
+    rows.forEach((row) => { new Image().src = `assets/exp/${row.dataset.art}.webp`; });
+    if (rows[0]) show(rows[0]);
+  }, 60);
+  window.addEventListener('resize', () => current && place(current));
 }
 
 // ---------- Publications ----------

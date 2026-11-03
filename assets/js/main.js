@@ -47,6 +47,7 @@ function setFold(fold, open) {
       delete foldOpeners[fold.id];
     }
   }
+  window.dispatchEvent(new Event('foldchange'));
 }
 
 function openFold(id, scroll) {
@@ -392,6 +393,7 @@ let controller = null;
 let spotifyAPI = null;
 let deckWanted = false;   // the embed is only built once the fold has been opened
 let isPaused = true;
+let hasPlayed = false;    // the mini player only shows up once something has played
 
 // "https://open.spotify.com/intl-de/album/ID?si=..." -> { type: "album", id: "ID" }
 function parseSpotify(link) {
@@ -444,6 +446,7 @@ function showEntry(index) {
   deck.title.textContent = entry.title || TYPE_LABELS[entry.type];
   deck.by.textContent = [entry.by, TYPE_LABELS[entry.type]].filter(Boolean).join(' · ');
   deck.count.textContent = `04.${index + 1} / ${entries.length}`;
+  paintMini();
   playlistList.querySelectorAll('.cover').forEach((cover, i) => {
     cover.classList.toggle('is-active', i === index);
     cover.setAttribute('aria-pressed', String(i === index));
@@ -471,12 +474,19 @@ function buildDeck(autoplay) {
     controller = ctrl;
     controller.addListener('playback_update', (e) => {
       isPaused = e.data.isPaused;
-      deck.play.textContent = isPaused ? '▶' : '❚❚';
-      deck.play.setAttribute('aria-label', isPaused ? 'Play' : 'Pause');
+      if (!isPaused) hasPlayed = true;
+      [deck.play, mini.play].forEach((btn) => {
+        if (!btn) return;
+        btn.textContent = isPaused ? '▶' : '❚❚';
+        btn.setAttribute('aria-label', isPaused ? 'Play' : 'Pause');
+      });
       if (e.data.duration) {
-        deck.bar.style.width = `${Math.min(100, (e.data.position / e.data.duration) * 100)}%`;
+        const done = `${Math.min(100, (e.data.position / e.data.duration) * 100)}%`;
+        deck.bar.style.width = done;
+        if (mini.bar) mini.bar.style.width = done;
         deck.time.textContent = formatTime(e.data.position);
       }
+      updateMini();
     });
     if (autoplay) controller.play();
   });
@@ -587,6 +597,61 @@ deck.play?.addEventListener('click', () => {
 });
 deck.prev?.addEventListener('click', () => select(current - 1, !isPaused));
 deck.next?.addEventListener('click', () => select(current + 1, !isPaused));
+
+// ---------- Mini player: keeps the music in reach once On repeat is closed or scrolled past ----------
+const mini = {
+  el: document.getElementById('mini'),
+  art: document.querySelector('#mini-open img'),
+  open: document.getElementById('mini-open'),
+  title: document.getElementById('mini-title'),
+  by: document.getElementById('mini-by'),
+  play: document.getElementById('mini-play'),
+  prev: document.getElementById('mini-prev'),
+  next: document.getElementById('mini-next'),
+  close: document.getElementById('mini-close'),
+  bar: document.getElementById('mini-bar'),
+};
+let deckInView = false;
+
+function paintMini() {
+  const entry = entries[current];
+  if (!entry || !mini.el) return;
+  mini.title.textContent = entry.title || TYPE_LABELS[entry.type];
+  mini.by.textContent = [entry.by, TYPE_LABELS[entry.type]].filter(Boolean).join(' · ');
+  if (entry.image) mini.art.src = entry.image;
+  else mini.art.removeAttribute('src');
+}
+
+function updateMini() {
+  if (!mini.el) return;
+  const fold = document.getElementById('playlists');
+  const up = hasPlayed && !(fold.classList.contains('is-open') && deckInView);
+  mini.el.classList.toggle('is-up', up);
+  mini.el.setAttribute('aria-hidden', String(!up));
+  mini.el.querySelectorAll('button').forEach((btn) => { btn.tabIndex = up ? 0 : -1; });
+}
+
+if (mini.el) {
+  new IntersectionObserver(([entry]) => {
+    deckInView = entry.isIntersecting;
+    updateMini();
+  }, { threshold: 0.2 }).observe(document.getElementById('deck'));
+  window.addEventListener('foldchange', updateMini);
+
+  mini.play.addEventListener('click', () => controller?.togglePlay());
+  mini.prev.addEventListener('click', () => select(current - 1, !isPaused));
+  mini.next.addEventListener('click', () => select(current + 1, !isPaused));
+  mini.open.addEventListener('click', () => {
+    openFold('playlists', true);
+    history.replaceState(null, '', '#playlists');
+  });
+  // stop for good: pause and put the player away until something is played again
+  mini.close.addEventListener('click', () => {
+    controller?.pause();
+    hasPlayed = false;
+    updateMini();
+  });
+}
 
 // Recommend a song: opens the visitor's email, addressed to the form's data-to
 const recommendForm = document.getElementById('recommend');

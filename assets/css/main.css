@@ -153,6 +153,61 @@ a {
     border-top: var(--rule);
 }
 
+/* Addis Ababa now: sits in the empty top of the middle column, above ሰላም */
+.now {
+    position: absolute;
+    left: 6.5%;
+    right: 6%;
+    top: 1.5%;
+}
+
+.now-place {
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+}
+
+.now-dot {
+    width: 7px;
+    height: 7px;
+    flex: none;
+    background: var(--red);
+    border-radius: 50%;
+    animation: now-blink 2s steps(1) infinite;
+}
+
+@keyframes now-blink {
+    50% { opacity: 0.15; }
+}
+
+.now-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.3em 0.8em;
+}
+
+.now-row + .now-row {
+    margin-top: 0.25em;
+}
+
+.now-time {
+    font-family: var(--display);
+    font-size: clamp(22px, 2.4cqw, 38px);
+    line-height: 0.95;
+    white-space: nowrap;
+}
+
+.now-side {
+    text-align: right;
+}
+
+.now-ampm {
+    margin-left: 0.2em;
+    font-size: 0.5em;
+    color: var(--red);
+}
+
 .hero-mid .label-block {
     position: absolute;
     left: 6.5%;
@@ -1253,19 +1308,6 @@ li:not(.has-art) .cover-art img {
     text-transform: uppercase;
 }
 
-.net-name em {
-    margin-left: 10px;
-    font-style: normal;
-    font-weight: 600;
-    color: #555;
-    transition: color 0.2s;
-}
-
-.net-row:hover .net-name em,
-.net-row.is-hot .net-name em {
-    color: var(--ink);
-}
-
 .net-note {
     grid-area: note;
     margin-top: 6px;
@@ -1467,6 +1509,16 @@ li:not(.has-art) .cover-art img {
 
     .hero-mid .label-block {
         border-bottom: var(--rule);
+    }
+
+    .now {
+        position: static;
+        padding: 18px 16px;
+        border-bottom: var(--rule);
+    }
+
+    .now-time {
+        font-size: 44px;
     }
 
     .hero-mid .label {

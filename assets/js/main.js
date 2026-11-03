@@ -165,7 +165,7 @@ async function loadPublications() {
 }
 
 // ---------- Network: assets/data/network.json, drawn as a map around me ----------
-// "ring": 1 is the inner ring (people I know), 2, 3... sit further out; "know" / "find" also work (1 / 2)
+// "ring": 1 is the inner ring, the closest people; 2, 3... sit further out
 const networkList = document.getElementById('network-list');
 const networkMap = document.getElementById('network-map');
 const networkJump = document.getElementById('network-jump');
@@ -238,7 +238,7 @@ async function loadNetwork() {
       .map((p) => (typeof p === 'string' ? { url: p } : p))
       .filter((p) => p && p.url)
       .map((p) => ({ ...p, host: hostOf(p.url), name: p.name || hostOf(p.url),
-        ringNo: Math.max(1, Math.round(Number(p.ring)) || (p.ring === 'know' ? 1 : 2)) }));
+        ringNo: Math.max(1, Math.round(Number(p.ring)) || 1) }));
 
     drawNetwork(people);
 
@@ -253,7 +253,7 @@ async function loadNetwork() {
         <a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">
           <span class="row-meta">05.${i + 1}</span>
           <span class="net-host">${esc(p.host)}</span>
-          <span class="net-name">${esc(p.name)}<em>${p.ringNo === 1 ? 'Know them' : 'Find them interesting'}</em></span>
+          <span class="net-name">${esc(p.name)}</span>
           ${p.note ? `<span class="net-note">${esc(p.note)}</span>` : ''}
           <span class="net-arrow" aria-hidden="true">↗</span>
         </a>
@@ -272,9 +272,7 @@ async function loadNetwork() {
       node.addEventListener('mouseleave', () => hotNetwork(k, false));
     });
 
-    const known = people.filter((p) => p.ringNo === 1).length;
-    setMeta('network-meta', [`${people.length} ${people.length === 1 ? 'link' : 'links'}`,
-      known ? `${known} I know` : ''].filter(Boolean).join(' · '));
+    setMeta('network-meta', `${people.length} ${people.length === 1 ? 'person' : 'people'}`);
 
     if (networkJump) {
       networkJump.hidden = false;
@@ -552,6 +550,70 @@ recommendForm?.addEventListener('submit', (e) => {
   ].filter((line, i, all) => line || (i > 0 && all[i - 1])).join('\n');
   window.location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 });
+
+// ---------- Addis Ababa now: the time (and the Ethiopian clock) and the weather ----------
+const ADDIS = { tz: 'Africa/Addis_Ababa', lat: 9.03, lon: 38.74 };
+const nowTime = document.getElementById('now-time');
+const nowAmpm = document.getElementById('now-ampm');
+const nowEth = document.getElementById('now-eth');
+const nowWeather = document.getElementById('now-weather');
+
+function addisClock() {
+  const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', {
+    timeZone: ADDIS.tz, hour: 'numeric', minute: '2-digit', hourCycle: 'h23',
+  }).formatToParts(new Date()).map((p) => [p.type, p.value]));
+  const h = Number(parts.hour);
+  const m = parts.minute;
+  nowTime.textContent = `${h % 12 || 12}:${m}`;
+  nowAmpm.textContent = h < 12 ? 'AM' : 'PM';
+  // the Ethiopian clock starts the day at sunrise: 7 AM is 1 o'clock
+  nowEth.textContent = `${(h + 18) % 12 || 12}:${m} in Ethiopian time`;
+}
+
+// WMO weather codes, as Open-Meteo sends them
+function weatherWords(code) {
+  if (code === 0) return 'clear';
+  if (code <= 2) return 'partly cloudy';
+  if (code === 3) return 'overcast';
+  if (code <= 48) return 'fog';
+  if (code <= 57) return 'drizzle';
+  if (code <= 67) return 'rain';
+  if (code <= 77) return 'snow';
+  if (code <= 82) return 'showers';
+  if (code <= 86) return 'snow showers';
+  return 'thunderstorm';
+}
+
+async function addisWeather() {
+  const KEY = 'addis-weather';
+  let w = null;
+  try {
+    const cached = JSON.parse(localStorage.getItem(KEY) || 'null');
+    if (cached && Date.now() - cached.at < 15 * 60 * 1000) w = cached;
+  } catch { /* storage blocked: fetch fresh */ }
+
+  if (!w) {
+    try {
+      const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${ADDIS.lat}&longitude=${ADDIS.lon}`
+        + `&current=temperature_2m,weather_code&timezone=${encodeURIComponent(ADDIS.tz)}`);
+      if (!res.ok) throw new Error(res.status);
+      const { current } = await res.json();
+      w = { at: Date.now(), temp: Math.round(current.temperature_2m), code: current.weather_code };
+      try { localStorage.setItem(KEY, JSON.stringify(w)); } catch { /* fine without the cache */ }
+    } catch (error) {
+      console.warn('Weather unavailable:', error);
+      return;
+    }
+  }
+  nowWeather.textContent = `${w.temp}°C, ${weatherWords(w.code)}`;
+}
+
+if (nowTime) {
+  addisClock();
+  setInterval(addisClock, 15 * 1000);
+  addisWeather();
+  setInterval(addisWeather, 15 * 60 * 1000);
+}
 
 // Load data on initialization, then open a fold named in the address (#playlists etc.)
 document.addEventListener('DOMContentLoaded', async () => {

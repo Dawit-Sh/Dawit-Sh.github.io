@@ -164,6 +164,143 @@ async function loadPublications() {
   }
 }
 
+// ---------- Network: assets/data/network.json, drawn as a map around me ----------
+// ring "know" = people I know (inner ring), anything else = people I find interesting (outer ring)
+const networkList = document.getElementById('network-list');
+const networkMap = document.getElementById('network-map');
+const networkJump = document.getElementById('network-jump');
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+function hostOf(url) {
+  try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return url; }
+}
+
+function initialsOf(name) {
+  const words = String(name).replace(/\.[a-z]+$/i, '').split(/[\s._-]+/).filter(Boolean);
+  return (words.length > 1 ? words[0][0] + words[words.length - 1][0] : words[0]?.slice(0, 2) || '?').toUpperCase();
+}
+
+// a small steady number per site, so a node keeps its spot between visits
+function hashOf(text) {
+  let h = 2166136261;
+  for (const c of String(text)) h = Math.imul(h ^ c.charCodeAt(0), 16777619);
+  return (h >>> 0) / 4294967295;
+}
+
+function svgEl(tag, attrs, parent) {
+  const el = document.createElementNS(SVG_NS, tag);
+  Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+  parent?.appendChild(el);
+  return el;
+}
+
+function drawNetwork(people) {
+  const C = 200;
+  const rings = { know: 92, find: 158 };
+  networkMap.replaceChildren();
+  Object.entries(rings).forEach(([ring, r]) => {
+    svgEl('circle', { cx: C, cy: C, r, class: `net-ring net-ring-${ring}` }, networkMap);
+  });
+
+  const wires = svgEl('g', { class: 'net-wires' }, networkMap);
+  const nodes = svgEl('g', { class: 'net-nodes' }, networkMap);
+  const byRing = { know: [], find: [] };
+  people.forEach((p, i) => byRing[p.ring === 'know' ? 'know' : 'find'].push({ ...p, i }));
+
+  Object.entries(byRing).forEach(([ring, list], ringIndex) => {
+    const r = rings[ring];
+    const start = ringIndex ? -Math.PI / 2 + 0.6 : -Math.PI / 2;
+    list.forEach((p, k) => {
+      const jitter = (hashOf(p.host) - 0.5) * (list.length > 1 ? Math.PI / list.length * 0.5 : 0.8);
+      const a = start + (k / Math.max(list.length, 1)) * Math.PI * 2 + jitter;
+      const x = C + Math.cos(a) * r;
+      const y = C + Math.sin(a) * r;
+      const len = Math.hypot(x - C, y - C);
+      svgEl('line', {
+        x1: C, y1: C, x2: x.toFixed(1), y2: y.toFixed(1), class: 'net-wire', 'data-k': p.i,
+        style: `--len:${len.toFixed(0)};--i:${p.i}`,
+      }, wires);
+      const link = svgEl('a', { href: p.url, target: '_blank', rel: 'noopener noreferrer', tabindex: '-1',
+        class: 'net-node', 'data-k': p.i, style: `--i:${p.i}` }, nodes);
+      svgEl('title', {}, link).textContent = `${p.name} · ${p.host}`;
+      svgEl('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: 19 }, link);
+      svgEl('text', { x: x.toFixed(1), y: (y + 5.5).toFixed(1), 'text-anchor': 'middle' }, link)
+        .textContent = initialsOf(p.name);
+    });
+  });
+
+  // me in the middle
+  const me = svgEl('g', { class: 'net-me' }, networkMap);
+  svgEl('circle', { cx: C, cy: C, r: 34, class: 'net-pulse' }, me);
+  svgEl('circle', { cx: C, cy: C, r: 27 }, me);
+  svgEl('text', { x: C, y: C + 7.5, 'text-anchor': 'middle' }, me).textContent = 'DS';
+}
+
+// light up a person's row, wire and node together
+function hotNetwork(k, on) {
+  document.querySelectorAll(`#network [data-k="${k}"]`).forEach((el) => el.classList.toggle('is-hot', on));
+}
+
+async function loadNetwork() {
+  if (!networkList || !networkMap) return;
+
+  try {
+    const data = await loadJSON('assets/data/network.json');
+    const people = (Array.isArray(data) ? data : [])
+      .map((p) => (typeof p === 'string' ? { url: p } : p))
+      .filter((p) => p && p.url)
+      .map((p) => ({ ...p, host: hostOf(p.url), name: p.name || hostOf(p.url) }));
+
+    drawNetwork(people);
+
+    if (people.length === 0) {
+      networkList.innerHTML = '<li class="info">Links coming soon.</li>';
+      setMeta('network-meta', 'coming soon');
+      return;
+    }
+
+    networkList.innerHTML = people.map((p, i) => `
+      <li class="net-row" data-k="${i}">
+        <a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">
+          <span class="row-meta">05.${i + 1}</span>
+          <span class="net-host">${esc(p.host)}</span>
+          <span class="net-name">${esc(p.name)}<em>${p.ring === 'know' ? 'Know them' : 'Find them interesting'}</em></span>
+          ${p.note ? `<span class="net-note">${esc(p.note)}</span>` : ''}
+          <span class="net-arrow" aria-hidden="true">↗</span>
+        </a>
+      </li>
+    `).join('');
+    numberRows(networkList);
+
+    networkList.querySelectorAll('.net-row').forEach((row) => {
+      const k = row.dataset.k;
+      ['mouseenter', 'focusin'].forEach((ev) => row.addEventListener(ev, () => hotNetwork(k, true)));
+      ['mouseleave', 'focusout'].forEach((ev) => row.addEventListener(ev, () => hotNetwork(k, false)));
+    });
+    networkMap.querySelectorAll('.net-node').forEach((node) => {
+      const k = node.dataset.k;
+      node.addEventListener('mouseenter', () => hotNetwork(k, true));
+      node.addEventListener('mouseleave', () => hotNetwork(k, false));
+    });
+
+    const known = people.filter((p) => p.ring === 'know').length;
+    setMeta('network-meta', [`${people.length} ${people.length === 1 ? 'link' : 'links'}`,
+      known ? `${known} I know` : ''].filter(Boolean).join(' · '));
+
+    if (networkJump) {
+      networkJump.hidden = false;
+      networkJump.addEventListener('click', () => {
+        const p = people[Math.floor(Math.random() * people.length)];
+        hotNetwork(people.indexOf(p), true);
+        setTimeout(() => hotNetwork(people.indexOf(p), false), 900);
+        window.open(p.url, '_blank', 'noopener');
+      });
+    }
+  } catch (error) {
+    showError(networkList, 'network', error);
+  }
+}
+
 // ---------- Socials: assets/data/socials.json, links left empty stay hidden ----------
 async function loadSocials() {
   const lists = document.querySelectorAll('[data-socials]');
@@ -429,7 +566,7 @@ recommendForm?.addEventListener('submit', (e) => {
 
 // Load data on initialization, then open a fold named in the address (#playlists etc.)
 document.addEventListener('DOMContentLoaded', async () => {
-  await Promise.all([loadExperience(), loadPublications(), loadPlaylists(), loadSocials()]);
+  await Promise.all([loadExperience(), loadPublications(), loadPlaylists(), loadNetwork(), loadSocials()]);
   const id = location.hash.slice(1);
   if (id && folds.some((f) => f.id === id)) openFold(id, true);
 });

@@ -1007,6 +1007,285 @@ li:not(.has-art) .cover-art img {
     outline: none;
 }
 
+/* ---------- Network: a map of rings around me, and the list ---------- */
+.fold-inner > .net {
+    margin: clamp(22px, 2.6cqw, 36px) 0 clamp(28px, 3.4cqw, 48px);
+}
+
+#network .fold-inner {
+    padding-left: var(--gutter);
+}
+
+.net {
+    display: grid;
+    grid-template-columns: minmax(280px, 40%) 1fr;
+    gap: clamp(18px, 2.6cqw, 40px);
+    align-items: start;
+}
+
+.net-map {
+    margin: 0;
+    background: var(--red);
+    padding: clamp(14px, 1.8cqw, 24px);
+}
+
+.fold.is-open .net-map {
+    animation: deck-in 0.9s var(--ease-snap) 0.2s both;
+}
+
+.net-map svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+}
+
+.net-ring {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 1;
+    stroke-dasharray: 1.5 5;
+}
+
+.net-wire {
+    stroke: var(--ink);
+    stroke-width: 1.2;
+    stroke-dasharray: var(--len);
+    stroke-dashoffset: var(--len);
+    transition: stroke 0.2s, stroke-width 0.2s;
+}
+
+.fold.is-open .net-wire {
+    animation: wire 0.9s var(--ease-out) both;
+    animation-delay: calc(var(--i, 0) * 90ms + 650ms);
+}
+
+@keyframes wire {
+    to { stroke-dashoffset: 0; }
+}
+
+.net-wire.is-hot {
+    stroke: var(--paper);
+    stroke-width: 2.5;
+}
+
+.net-node {
+    cursor: pointer;
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+.fold.is-open .net-node {
+    animation: node-in 0.6s var(--ease-out) both;
+    animation-delay: calc(var(--i, 0) * 90ms + 1100ms);
+}
+
+@keyframes node-in {
+    from { transform: scale(0); }
+    to { transform: scale(1); }
+}
+
+.net-node circle {
+    fill: var(--paper);
+    stroke: var(--ink);
+    stroke-width: 1.5;
+    transition: fill 0.2s;
+}
+
+.net-node text,
+.net-me text {
+    font-family: var(--display);
+    font-size: 17px;
+    fill: var(--ink);
+    pointer-events: none;
+    transition: fill 0.2s;
+}
+
+.net-node.is-hot circle {
+    fill: var(--ink);
+}
+
+.net-node.is-hot text {
+    fill: var(--paper);
+}
+
+.net-me circle {
+    fill: var(--ink);
+}
+
+.net-me text {
+    font-size: 24px;
+    fill: var(--paper);
+}
+
+.net-me .net-pulse {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 1.5;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: pulse 2.4s var(--ease-out) infinite;
+}
+
+@keyframes pulse {
+    from { transform: scale(0.8); opacity: 1; }
+    to { transform: scale(1.7); opacity: 0; }
+}
+
+.net-key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    margin-top: 12px;
+    font-size: 10.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.net-key span {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.net-key i {
+    display: inline-block;
+    border: 1.5px dotted var(--ink);
+    border-radius: 50%;
+}
+
+.net-key .key-know {
+    width: 9px;
+    height: 9px;
+}
+
+.net-key .key-find {
+    width: 15px;
+    height: 15px;
+}
+
+.net-jump {
+    margin-top: 14px;
+}
+
+.net-jump:hover,
+.net-jump:focus-visible {
+    background: var(--paper);
+    color: var(--ink);
+}
+
+.net-list {
+    list-style: none;
+    border-bottom: var(--rule);
+}
+
+.net-row a {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    grid-template-columns: minmax(48px, 10%) 1fr auto;
+    grid-template-areas:
+        "meta host arrow"
+        ".    name arrow"
+        ".    note arrow";
+    gap: 0 clamp(12px, 2cqw, 28px);
+    align-items: baseline;
+    padding: 16px 12px 17px 0;
+    border-top: var(--rule);
+    color: inherit;
+    text-decoration: none;
+    overflow: hidden;
+}
+
+/* a red bar sweeps across the row under the text */
+.net-row a::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--red);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.45s var(--ease-snap);
+}
+
+.net-row:hover a::before,
+.net-row.is-hot a::before,
+.net-row a:focus-visible::before {
+    transform: scaleX(1);
+}
+
+.net-row a:focus-visible {
+    outline: none;
+}
+
+.net-row .row-meta {
+    grid-area: meta;
+    padding-left: 10px;
+    transition: color 0.2s;
+}
+
+.net-row.is-hot .row-meta,
+.net-row:hover .row-meta {
+    color: var(--ink);
+}
+
+.net-host {
+    grid-area: host;
+    font-family: var(--display);
+    font-size: clamp(32px, 3.6cqw, 56px);
+    line-height: 0.92;
+    letter-spacing: 0.005em;
+    overflow-wrap: anywhere;
+    transition: letter-spacing 0.45s var(--ease-out);
+}
+
+.net-row:hover .net-host,
+.net-row.is-hot .net-host {
+    letter-spacing: 0.03em;
+}
+
+.net-name {
+    grid-area: name;
+    margin-top: 6px;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.net-name em {
+    margin-left: 10px;
+    font-style: normal;
+    font-weight: 600;
+    color: #555;
+    transition: color 0.2s;
+}
+
+.net-row:hover .net-name em,
+.net-row.is-hot .net-name em {
+    color: var(--ink);
+}
+
+.net-note {
+    grid-area: note;
+    margin-top: 6px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.net-arrow {
+    grid-area: arrow;
+    align-self: center;
+    font-size: 26px;
+    font-weight: 800;
+    transition: transform 0.35s var(--ease-out);
+}
+
+.net-row:hover .net-arrow,
+.net-row.is-hot .net-arrow {
+    transform: translate(4px, -4px) rotate(45deg);
+}
+
 /* ---------- Socials ---------- */
 .socials {
     list-style: none;
@@ -1311,8 +1590,28 @@ li:not(.has-art) .cover-art img {
         margin-bottom: 4px;
     }
 
-    .pl {
+    .pl,
+    .net {
         grid-template-columns: 1fr;
+    }
+
+    #network .fold-inner {
+        padding: 0 16px;
+    }
+
+    .net-row a {
+        grid-template-columns: 1fr auto;
+        grid-template-areas:
+            "meta arrow"
+            "host arrow"
+            "name arrow"
+            "note arrow";
+        padding-left: 10px;
+    }
+
+    .net-row .row-meta {
+        padding-left: 0;
+        margin-bottom: 4px;
     }
 
     .deck-title {

@@ -33,7 +33,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;700;800&family=Noto+Sans+Ethiopic:wght@700;800&display=swap">
-    <link rel="stylesheet" href="assets/css/main.css?v=20261103a">
+    <link rel="stylesheet" href="assets/css/main.css?v=20261103b">
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
 </head>
 
@@ -61,7 +61,8 @@
                     <a href="#experience" data-fold="experience"><span>02</span>Experience</a>
                     <a href="#publications" data-fold="publications"><span>03</span>Publications</a>
                     <a href="#playlists" data-fold="playlists"><span>04</span>Playlists</a>
-                    <a href="#socials"><span>05</span>Socials</a>
+                    <a href="#network" data-fold="network"><span>05</span>Network</a>
+                    <a href="#socials"><span>06</span>Socials</a>
                 </nav>
                 <ul class="socials socials-mini" data-socials aria-label="Socials"></ul>
             </div>
@@ -88,7 +89,7 @@
         </div>
     </section>
 
-    <!-- 02-04 / Folds: closed strips that unfold on click -->
+    <!-- 02-05 / Folds: closed strips that unfold on click -->
     <section class="sheet fold" id="experience">
         <h2 class="fold-h">
             <button type="button" class="fold-head" aria-expanded="false" aria-controls="experience-body">
@@ -180,17 +181,45 @@
         </div>
     </section>
 
-    <!-- 05 / Socials -->
+    <section class="sheet fold" id="network">
+        <h2 class="fold-h">
+            <button type="button" class="fold-head" aria-expanded="false" aria-controls="network-body">
+                <span class="fold-num">05</span>
+                <span class="fold-title">Network</span>
+                <span class="fold-meta" id="network-meta"></span>
+                <span class="fold-icon" aria-hidden="true"></span>
+            </button>
+        </h2>
+        <div class="fold-body" id="network-body" role="region" aria-label="Network">
+            <div class="fold-inner">
+                <div class="net">
+                    <figure class="net-map">
+                        <svg id="network-map" viewBox="0 0 400 400" aria-hidden="true"></svg>
+                        <figcaption class="net-key">
+                            <span><i class="key-know"></i>Inner ring: people I know</span>
+                            <span><i class="key-find"></i>Outer ring: people I find interesting</span>
+                        </figcaption>
+                        <button type="button" class="btn net-jump" id="network-jump" hidden>Take me somewhere ↗</button>
+                    </figure>
+                    <ol class="net-list stagger" id="network-list">
+                        <!-- Loaded dynamically from assets/data/network.json -->
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 06 / Socials -->
     <footer class="sheet socials-foot" id="socials">
         <div class="foot-head">
-            <span class="sec-num">05</span>
+            <span class="sec-num">06</span>
             <h2 class="foot-title">Find me</h2>
         </div>
         <ul class="socials socials-big" data-socials data-labels aria-label="Socials"></ul>
         <p class="micro fine">© Dawit Sharon · <a href="#top">Back to top ↑</a></p>
     </footer>
 
-    <script src="assets/js/main.js?v=20261103a"></script>
+    <script src="assets/js/main.js?v=20261103b"></script>
     <script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
 </body>
 

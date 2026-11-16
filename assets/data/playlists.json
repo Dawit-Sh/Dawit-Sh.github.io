@@ -1,8 +1,4 @@
 [
-    { "spotify": "https://open.spotify.com/album/5wTUw3RhMlfZhiejI3qmFq", "by": "billy woods" },
-    { "spotify": "https://open.spotify.com/album/7hqPzbQqAKnqFbaKETFie3", "by": "E L U C I D" },
-    { "spotify": "https://open.spotify.com/album/4JAvwK4APPArjIsOdGoJXX", "by": "J. Cole" },
-    { "spotify": "https://open.spotify.com/album/1NfrmcXk8xNennyxQ57JcW", "by": "J. Cole" },
-    { "spotify": "https://open.spotify.com/album/0hvT3yIEysuuvkK73vgdcW", "by": "Kendrick Lamar" },
-    { "spotify": "https://open.spotify.com/album/79ONNoS4M9tfIA1mYLBYVX", "by": "Kendrick Lamar" }
+    { "bandcamp": "https://d-avethebombastic.bandcamp.com/album/inference", "album": 3313394811, "title": "የInference ዋጋ ንሯል", "by": "D-avethebombastic", "image": "https://f4.bcbits.com/img/a4169159813_2.jpg" },
+    { "bandcamp": "https://d-avethebombastic.bandcamp.com/album/-", "album": 1234306774, "title": "የአቶ ተሾመ መኪና", "by": "ዴ-ave & አሸብር Bmbo", "image": "https://f4.bcbits.com/img/a0641645228_2.jpg" }
 ]

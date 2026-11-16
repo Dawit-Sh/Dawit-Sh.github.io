@@ -33,7 +33,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;700;800&family=Noto+Sans+Ethiopic:wght@700;800&display=swap">
-    <link rel="stylesheet" href="assets/css/main.css?v=20261103h">
+    <link rel="stylesheet" href="assets/css/main.css?v=20261116a">
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
 </head>
 
@@ -60,7 +60,7 @@
                     <a href="#about"><span>01</span>About me</a>
                     <a href="#experience" data-fold="experience"><span>02</span>Experience</a>
                     <a href="#publications" data-fold="publications"><span>03</span>Publications</a>
-                    <a href="#playlists" data-fold="playlists"><span>04</span>Playlists</a>
+                    <a href="#playlists" data-fold="playlists"><span>04</span>Music</a>
                     <a href="#network" data-fold="network"><span>05</span>Network</a>
                     <a href="#socials"><span>06</span>Socials</a>
                 </nav>
@@ -68,7 +68,7 @@
             </div>
             <div class="label-block name-label">
                 <h2 class="label">My name<br>is</h2>
-                <p class="micro">Dawit Sharon. UGC video editor, writer and programmer.
+                <p class="micro">Dawit Sharon. Writer, programmer and producer.
                     This is my portfolio.</p>
                 <a href="assets/dawit-sharon-resume.pdf" class="resume-btn" download="Dawit-Sharon-Resume.pdf"><span>Resume</span><span class="resume-arrow" aria-hidden="true">↓</span></a>
             </div>
@@ -149,12 +149,12 @@
         <h2 class="fold-h">
             <button type="button" class="fold-head" aria-expanded="false" aria-controls="playlists-body">
                 <span class="fold-num">04</span>
-                <span class="fold-title">On repeat</span>
+                <span class="fold-title">Music</span>
                 <span class="fold-meta" id="playlists-meta"></span>
                 <span class="fold-icon" aria-hidden="true"></span>
             </button>
         </h2>
-        <div class="fold-body" id="playlists-body" role="region" aria-label="Playlists">
+        <div class="fold-body" id="playlists-body" role="region" aria-label="Music">
             <div class="fold-inner">
                 <div class="pl">
                     <div class="deck" id="deck">
@@ -170,9 +170,11 @@
                             <button type="button" class="deck-btn" id="deck-next" aria-label="Next">▶▶</button>
                             <div class="deck-bar" aria-hidden="true"><div class="deck-bar-fill" id="deck-bar"></div></div>
                             <span class="deck-time" id="deck-time">0:00</span>
+                            <a class="deck-link" id="deck-link" href="#" target="_blank" rel="noopener" hidden>Open on Bandcamp ↗</a>
                         </div>
                         <div class="deck-embed">
-                            <div id="spotify-embed"></div>
+                            <div id="spotify-slot"><div id="spotify-embed"></div></div>
+                            <div id="bandcamp-embed" hidden></div>
                         </div>
                     </div>
 
@@ -237,9 +239,9 @@
         <p class="micro fine">© Dawit Sharon · <a href="#top">Back to top ↑</a></p>
     </footer>
 
-    <!-- Mini player: slides up while a song plays and On repeat is closed or out of view -->
+    <!-- Mini player: slides up while a song plays and Music is closed or out of view -->
     <aside class="mini" id="mini" aria-label="Now playing" aria-hidden="true">
-        <button type="button" class="mini-art" id="mini-open" aria-label="Back to On repeat" tabindex="-1"><img alt=""></button>
+        <button type="button" class="mini-art" id="mini-open" aria-label="Back to Music" tabindex="-1"><img alt=""></button>
         <div class="mini-text">
             <span class="mini-kicker">Now playing</span>
             <span class="mini-title" id="mini-title"></span>
@@ -254,7 +256,7 @@
         <span class="mini-bar" aria-hidden="true"><i id="mini-bar"></i></span>
     </aside>
 
-    <script src="assets/js/main.js?v=20261103h"></script>
+    <script src="assets/js/main.js?v=20261116a"></script>
     <script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
 </body>
 

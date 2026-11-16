@@ -378,9 +378,11 @@ async function loadSocials() {
   }
 }
 
-// ---------- Playlists: Spotify links, played through one embed ----------
-// assets/data/playlists.json takes plain links or {"spotify": link, "by": "...", "note": "..."}.
-// Titles and cover art come from Spotify's public oEmbed and are cached in the browser.
+// ---------- Music: my own albums (Bandcamp) and Spotify links, played in the deck ----------
+// assets/data/playlists.json takes plain Spotify links, {"spotify": link, "by": "...", "note": "..."},
+// or my own albums: {"bandcamp": page, "album": numeric id, "title", "by", "image"}.
+// Spotify titles and cover art come from Spotify's public oEmbed and are cached in the browser.
+// Bandcamp has no player API, so its own embed takes over the deck and its own buttons play it.
 const playlistList = document.getElementById('playlist-list');
 const playlistFilters = document.getElementById('pl-filters');
 const deck = {
@@ -392,9 +394,39 @@ const deck = {
   next: document.getElementById('deck-next'),
   bar: document.getElementById('deck-bar'),
   time: document.getElementById('deck-time'),
+  link: document.getElementById('deck-link'),
+  el: document.getElementById('deck'),
+  spotify: document.getElementById('spotify-slot'), // Spotify's API swaps the embed div for its iframe
+  bandcamp: document.getElementById('bandcamp-embed'),
 };
 
-const TYPE_LABELS = { track: 'Song', album: 'Album', playlist: 'Playlist', artist: 'Artist', episode: 'Episode', show: 'Podcast' };
+const TYPE_LABELS = { mine: 'Mine', track: 'Song', album: 'Album', playlist: 'Playlist', artist: 'Artist', episode: 'Episode', show: 'Podcast' };
+
+function kindLabel(entry) {
+  return entry.bandcamp ? 'Bandcamp' : TYPE_LABELS[entry.type];
+}
+
+// Shows the Bandcamp player for my own albums, the Spotify one for everything else
+function showSource() {
+  const entry = entries[current];
+  if (!entry || !deckWanted) return;
+  const bc = Boolean(entry.bandcamp);
+  deck.el.classList.toggle('is-bc', bc);
+  deck.spotify.hidden = bc;
+  deck.bandcamp.hidden = !bc;
+  if (deck.link) {
+    deck.link.hidden = !bc;
+    if (bc) deck.link.href = entry.bandcamp;
+  }
+  if (!bc) return;
+  controller?.pause();
+  hasPlayed = false;
+  updateMini();
+  const src = `https://bandcamp.com/EmbeddedPlayer/album=${entry.id}/size=large/bgcol=333333/linkcol=ff1a00/tracklist=false/artwork=small/transparent=true/`;
+  const frame = deck.bandcamp.querySelector('iframe');
+  if (frame && frame.src === src) return;
+  deck.bandcamp.innerHTML = `<iframe src="${src}" title="${esc(entry.title)} on Bandcamp" height="120" loading="lazy" seamless></iframe>`;
+}
 const CACHE_DAYS = 14;
 
 let entries = [];
@@ -454,7 +486,7 @@ function showEntry(index) {
   const entry = entries[index];
   if (!entry) return;
   deck.title.textContent = entry.title || TYPE_LABELS[entry.type];
-  deck.by.textContent = [entry.by, TYPE_LABELS[entry.type]].filter(Boolean).join(' · ');
+  deck.by.textContent = [entry.by, kindLabel(entry)].filter(Boolean).join(' · ');
   deck.count.textContent = `04.${index + 1} / ${entries.length}`;
   paintMini();
   playlistList.querySelectorAll('.cover').forEach((cover, i) => {
@@ -469,6 +501,8 @@ function select(index, autoplay) {
   showEntry(current);
   deck.bar.style.width = '0';
   deck.time.textContent = '0:00';
+  showSource();
+  if (entries[current].bandcamp) return;
   if (controller) {
     controller.loadUri(entries[current].uri);
     if (autoplay) controller.play();
@@ -479,8 +513,10 @@ function select(index, autoplay) {
 
 function buildDeck(autoplay) {
   const element = document.getElementById('spotify-embed');
-  if (!spotifyAPI || !deckWanted || controller || !element || !entries.length) return;
-  spotifyAPI.createController(element, { uri: entries[current].uri, width: '100%', height: 152 }, (ctrl) => {
+  // the Spotify player starts on the selected entry, or the first Spotify one while my own album is up
+  const first = entries[current]?.uri ? entries[current] : entries.find((e) => e.uri);
+  if (!spotifyAPI || !deckWanted || controller || !element || !first) return;
+  spotifyAPI.createController(element, { uri: first.uri, width: '100%', height: 152 }, (ctrl) => {
     controller = ctrl;
     controller.addListener('playback_update', (e) => {
       isPaused = e.data.isPaused;
@@ -498,7 +534,7 @@ function buildDeck(autoplay) {
       }
       updateMini();
     });
-    if (autoplay) controller.play();
+    if (autoplay && !entries[current].bandcamp) controller.play();
   });
 }
 
@@ -510,6 +546,7 @@ window.onSpotifyIframeApiReady = (IFrameAPI) => {
 
 foldOpeners.playlists = () => {
   deckWanted = true;
+  showSource();
   buildDeck(false);
 };
 
@@ -521,7 +558,7 @@ function renderFilters() {
   }
   playlistFilters.innerHTML = ['all', ...types].map((type) => `
     <button type="button" class="chip${type === 'all' ? ' is-on' : ''}" data-type="${type}">
-      ${type === 'all' ? 'All' : `${TYPE_LABELS[type]}s`}
+      ${type === 'all' ? 'All' : type === 'mine' ? TYPE_LABELS.mine : `${TYPE_LABELS[type]}s`}
       <span>${type === 'all' ? entries.length : entries.filter((e) => e.type === type).length}</span>
     </button>
   `).join('');
@@ -554,9 +591,11 @@ async function loadPlaylists() {
     const data = await loadJSON('assets/data/playlists.json');
     entries = (Array.isArray(data) ? data : [])
       .map((item) => (typeof item === 'string' ? { spotify: item } : item))
-      .map((item) => ({ ...item, ...parseSpotify(item.spotify) }))
+      .map((item) => (item.bandcamp
+        ? { ...item, type: 'mine', id: item.album }
+        : { ...item, ...parseSpotify(item.spotify) }))
       .filter((item) => item.id)
-      .map((item) => ({ ...item, uri: `spotify:${item.type}:${item.id}` }));
+      .map((item) => (item.bandcamp ? item : { ...item, uri: `spotify:${item.type}:${item.id}` }));
 
     if (!entries.length) {
       playlistList.innerHTML = '<li class="info">No playlists yet.</li>';
@@ -584,10 +623,19 @@ async function loadPlaylists() {
 
     renderFilters();
     showEntry(0);
-    setMeta('playlists-meta', `${entries.length} on rotation · Spotify`);
+    const mine = entries.filter((e) => e.bandcamp).length;
+    const rotation = entries.length - mine;
+    setMeta('playlists-meta', rotation
+      ? [mine && `${mine} of mine · Bandcamp`, `${rotation} on rotation · Spotify`].filter(Boolean).join(' · ')
+      : `${mine} album${mine === 1 ? '' : 's'} · Bandcamp`);
 
-    // Fill in titles and covers as Spotify answers (an explicit "title" in the file wins)
+    // Fill in titles and covers as Spotify answers (an explicit "title" in the file wins);
+    // my own albums carry theirs in the file
     entries.forEach((entry, i) => {
+      if (entry.bandcamp) {
+        paintCover(i);
+        return;
+      }
       fetchSpotifyMeta(entry)
         .then((meta) => {
           entry.title = entry.title || meta.title;
@@ -602,13 +650,14 @@ async function loadPlaylists() {
 }
 
 deck.play?.addEventListener('click', () => {
+  if (entries[current]?.bandcamp) return;
   if (controller) controller.togglePlay();
   else select(current, true);
 });
 deck.prev?.addEventListener('click', () => select(current - 1, !isPaused));
 deck.next?.addEventListener('click', () => select(current + 1, !isPaused));
 
-// ---------- Mini player: keeps the music in reach once On repeat is closed or scrolled past ----------
+// ---------- Mini player: keeps the music in reach once Music is closed or scrolled past ----------
 const mini = {
   el: document.getElementById('mini'),
   art: document.querySelector('#mini-open img'),
@@ -627,7 +676,7 @@ function paintMini() {
   const entry = entries[current];
   if (!entry || !mini.el) return;
   mini.title.textContent = entry.title || TYPE_LABELS[entry.type];
-  mini.by.textContent = [entry.by, TYPE_LABELS[entry.type]].filter(Boolean).join(' · ');
+  mini.by.textContent = [entry.by, kindLabel(entry)].filter(Boolean).join(' · ');
   if (entry.image) mini.art.src = entry.image;
   else mini.art.removeAttribute('src');
 }

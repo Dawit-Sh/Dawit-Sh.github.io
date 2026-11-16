@@ -917,6 +917,43 @@ a {
     border: 0;
 }
 
+/* My own albums play in Bandcamp's embed, which has its own play button and bar */
+.deck.is-bc .deck-play,
+.deck.is-bc .deck-bar,
+.deck.is-bc .deck-time {
+    display: none;
+}
+
+.deck.is-bc .deck-embed {
+    min-height: 120px;
+}
+
+.deck-link {
+    margin-left: auto;
+    padding: 0 14px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+}
+
+.deck-link[hidden] {
+    display: none;
+}
+
+.deck-link:hover,
+.deck-link:focus-visible {
+    background: var(--paper);
+    color: var(--ink);
+    outline: none;
+}
+
 .pl-filters {
     display: flex;
     flex-wrap: wrap;

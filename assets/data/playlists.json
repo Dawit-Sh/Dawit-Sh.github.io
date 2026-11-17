@@ -1,4 +1,53 @@
 [
-    { "bandcamp": "https://d-avethebombastic.bandcamp.com/album/inference", "album": 3313394811, "title": "የInference ዋጋ ንሯል", "by": "D-avethebombastic", "image": "https://f4.bcbits.com/img/a4169159813_2.jpg" },
-    { "bandcamp": "https://d-avethebombastic.bandcamp.com/album/-", "album": 1234306774, "title": "የአቶ ተሾመ መኪና", "by": "ዴ-ave & አሸብር Bmbo", "image": "https://f4.bcbits.com/img/a0641645228_2.jpg" }
+    {
+        "bandcamp": "https://d-avethebombastic.bandcamp.com/album/inference",
+        "album": 3313394811,
+        "title": "የInference ዋጋ ንሯል",
+        "by": "D-avethebombastic",
+        "image": "https://f4.bcbits.com/img/a4169159813_2.jpg",
+        "released": "2026-11-16",
+        "tracks": [
+            {"n": 1, "title": "አንቺን በDRAMጬ", "secs": 138, "id": 2054429050},
+            {"n": 2, "title": "0912345678", "secs": 140, "id": 515475788},
+            {"n": 3, "title": "በመላጣው", "secs": 142, "id": 1743429028},
+            {"n": 4, "title": "በቃጭሎቹ መሃል", "secs": 139, "id": 1029229367},
+            {"n": 5, "title": "ሙዚቃዊ ስልት", "secs": 139, "id": 919953156},
+            {"n": 6, "title": "This is Ambassel", "secs": 140, "id": 777788677},
+            {"n": 7, "title": "የቤከር ጉድ without the shenanigans", "secs": 137, "id": 295982568},
+            {"n": 8, "title": "ጥንቸሏ ድም ድም", "secs": 141, "id": 147286564},
+            {"n": 9, "title": "ከJegol ግንብ ባሻገር", "secs": 138, "id": 1543707082},
+            {"n": 10, "title": "ትችላለህ በለው", "secs": 140, "id": 2065353430}
+        ]
+    },
+    {
+        "bandcamp": "https://d-avethebombastic.bandcamp.com/album/-",
+        "album": 1234306774,
+        "title": "የአቶ ተሾመ መኪና",
+        "by": "ዴ-ave & አሸብር Bmbo",
+        "image": "https://f4.bcbits.com/img/a0641645228_2.jpg",
+        "released": "2026-05-12",
+        "tracks": [
+            {"n": 1, "title": "REBEL", "secs": 62, "id": 598215260},
+            {"n": 2, "title": "የምርጫ ሰዐት ስለ ደረሰ ነው", "secs": 63, "id": 4045124467},
+            {"n": 3, "title": "Poor ጀነራል ሚፈልገው ነገር አለ", "secs": 102, "id": 3976835240},
+            {"n": 4, "title": "የሙአዝ የክርስትና ስም ሀይለ-ቡከር", "secs": 125, "id": 3536378674},
+            {"n": 5, "title": "አተ", "secs": 13, "id": 97126415},
+            {"n": 6, "title": "ahoy la loy", "secs": 113, "id": 861456981},
+            {"n": 7, "title": "የማንን ጎፈሬ ታበጥሪያለሽ", "secs": 88, "id": 1138421068},
+            {"n": 8, "title": "የኛ ቶሎ ቶሎ ቤት ቅማል በላው", "secs": 121, "id": 203086805},
+            {"n": 9, "title": "ሀለሐመ", "secs": 35, "id": 4227583806},
+            {"n": 10, "title": "በረኪና አለ ወይ ...", "secs": 86, "id": 3471381212},
+            {"n": 11, "title": "ባጎረስኩ ቃጭል ተጨምሮ", "secs": 100, "id": 1512746101},
+            {"n": 12, "title": "ወል ጋራ", "secs": 111, "id": 3927221147},
+            {"n": 13, "title": "ሁle ደስተኛ", "secs": 117, "id": 4180373114},
+            {"n": 14, "title": "Ems (employee management system)", "secs": 140, "id": 1888456510},
+            {"n": 15, "title": "ዝናቡ ሊዘንብ ነው ወይ 004", "secs": 110, "id": 3375895901},
+            {"n": 16, "title": "rs 1", "secs": 99, "id": 1940520750},
+            {"n": 17, "title": "Yematibela Weff Smoke", "secs": 222, "id": 3769002751},
+            {"n": 18, "title": "ወድቄ ነው ኪይቦርዴ ላይ? (ኣስግጅፍካ)", "secs": 157, "id": 4185043406},
+            {"n": 19, "title": "ጆርጋን senmmkfm", "secs": 82, "id": 287828427},
+            {"n": 20, "title": "ስንሞቃት ጠሀይ እራሷን አጠፋች", "secs": 130, "id": 2869505745},
+            {"n": 21, "title": "ግቢና አውጪው", "secs": 92, "id": 2969469149}
+        ]
+    }
 ]

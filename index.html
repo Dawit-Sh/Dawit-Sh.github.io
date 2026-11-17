@@ -1,13 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dawit Sharon</title>
 
+    <!-- Dark is the default; a visitor's own choice (the switch at the bottom left) is remembered -->
+    <script>
+        try {
+            // ?theme=light (or dark) in the address picks one for a shared link
+            const q = new URLSearchParams(location.search).get('theme');
+            const t = q === 'light' || q === 'dark' ? q : localStorage.getItem('theme');
+            if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+        } catch (e) { /* storage blocked: stay dark */ }
+    </script>
+    <meta name="theme-color" content="#0f1012">
+
     <!-- SEO -->
-    <meta name="description" content="Yes, it's another portfolio. But Dawit Sharon's, so at least it has good taste.">
+    <meta name="description" content="Dawit Sharon: writer, programmer and producer in Addis Ababa.">
     <meta name="author" content="Dawit Sharon">
 
     <!-- Open Graph (Facebook, LinkedIn, WhatsApp, Telegram, etc.) -->
@@ -32,232 +43,92 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;700;800&family=Noto+Sans+Ethiopic:wght@700;800&display=swap">
-    <link rel="stylesheet" href="assets/css/main.css?v=20261116a">
+        href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Noto+Sans+Ethiopic:wght@400;600&display=swap">
+    <link rel="stylesheet" href="assets/css/main.css?v=20261117c">
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
 </head>
 
 <body>
-    <!-- 00 / Cover -->
-    <header class="sheet hero" id="top">
-        <div class="hero-art" aria-hidden="true">
-            <div class="blk-red"></div>
-            <img src="assets/portrait.webp" class="portrait" alt="">
-            <div class="blk-tint"></div>
-        </div>
+    <a class="skip" href="#main">Skip to content</a>
 
-        <div class="hero-mid">
-            <div class="label-block">
-                <h2 class="label ethiopic">ሰላም</h2>
-                <p class="micro">Yes, it's another portfolio. But at least this one has good taste.
-                    Writing, editing and building things for the web.</p>
+    <div class="wrap">
+        <!-- Left: stays put on wide screens -->
+        <header class="left">
+            <div class="id">
+                <h1 class="nm">Dawit Sharon</h1>
+                <p class="tg">Writer, programmer and producer</p>
+                <p class="sub">I enjoy tinkering around, and I have a lot of interests, ranging from philosophy to technology.</p>
             </div>
-        </div>
 
-        <div class="hero-right">
-            <div class="hero-top">
-                <nav class="hero-nav" aria-label="Main">
-                    <a href="#about"><span>01</span>About me</a>
-                    <a href="#experience" data-fold="experience"><span>02</span>Experience</a>
-                    <a href="#publications" data-fold="publications"><span>03</span>Publications</a>
-                    <a href="#playlists" data-fold="playlists"><span>04</span>Music</a>
-                    <a href="#network" data-fold="network"><span>05</span>Network</a>
-                    <a href="#socials"><span>06</span>Socials</a>
-                </nav>
-                <ul class="socials socials-mini" data-socials aria-label="Socials"></ul>
-            </div>
-            <div class="label-block name-label">
-                <h2 class="label">My name<br>is</h2>
-                <p class="micro">Dawit Sharon. Writer, programmer and producer.
-                    This is my portfolio.</p>
-                <a href="assets/dawit-sharon-resume.pdf" class="resume-btn" download="Dawit-Sharon-Resume.pdf"><span>Resume</span><span class="resume-arrow" aria-hidden="true">↓</span></a>
-            </div>
+            <nav class="toc" aria-label="Sections">
+                <a href="#about" class="on"><i></i>About</a>
+                <a href="#work"><i></i>Work</a>
+                <a href="#publications"><i></i>Publications</a>
+                <a href="#music"><i></i>Music</a>
+                <a href="#network"><i></i>Network</a>
+            </nav>
+
             <!-- Addis Ababa right now: clock ticks in main.js, weather from Open-Meteo -->
-            <div class="now" id="now">
-                <p class="now-head"><span class="now-dot" aria-hidden="true"></span>Addis Ababa, right now</p>
-                <div class="now-grid">
-                    <div>
-                        <p class="now-big"><span id="now-time">--:--</span><span class="now-ampm" id="now-ampm"></span></p>
-                        <p class="now-sub" id="now-eth"></p>
-                    </div>
-                    <div class="now-wx">
-                        <p class="now-big" id="now-temp"></p>
-                        <p class="now-sub" id="now-weather"></p>
-                    </div>
-                </div>
+            <p class="now">
+                Addis Ababa <b id="now-time">--:--</b><span id="now-wx"></span><br>
+                <span id="now-eth">&nbsp;</span>
+            </p>
+
+            <div class="links">
+                <ul class="soc" data-socials aria-label="Elsewhere"></ul>
+                <a class="cv" href="assets/dawit-sharon-resume.pdf" download="Dawit-Sharon-Resume.pdf">Resume ↓</a>
             </div>
-        </div>
 
-        <h1 class="giant" aria-label="Dawit"><span class="giant-a">DA</span><span class="giant-b">WIT</span></h1>
-    </header>
-
-    <!-- 01 / About (always open) -->
-    <section class="sheet section" id="about">
-        <div class="sec-head">
-            <span class="sec-num">01</span>
-            <h2 class="sec-title">About<br>me</h2>
-        </div>
-        <div class="sec-body about-text">
-            <p class="lead">ሰላም. I'm Dawit. I enjoy tinkering around, and I have a lot of interests, ranging from philosophy to technology.</p>
-            <p>I love exploring new technologies, building projects, messing around with stuff and trying to link different ideas together.</p>
-        </div>
-    </section>
-
-    <!-- 02-05 / Folds: closed strips that unfold on click -->
-    <section class="sheet fold" id="experience">
-        <h2 class="fold-h">
-            <button type="button" class="fold-head" aria-expanded="false" aria-controls="experience-body">
-                <span class="fold-num">02</span>
-                <span class="fold-title">Work experience</span>
-                <span class="fold-meta" id="experience-meta"></span>
-                <span class="fold-icon" aria-hidden="true"></span>
+            <button type="button" class="theme" id="theme-toggle" aria-label="Switch to the light theme">
+                <span class="theme-dot" aria-hidden="true"></span><span class="theme-label">Light</span>
             </button>
-        </h2>
-        <div class="fold-body" id="experience-body" role="region" aria-label="Work experience">
-            <div class="fold-inner">
-                <!-- a photo for the row you're on: assets/exp/<art>.webp ("art" in experience.json) -->
-                <div class="exp-stage" id="exp-stage" aria-hidden="true">
-                    <div class="exp-photo"><img alt=""></div>
-                    <p class="micro exp-cap"><span></span><span></span></p>
+        </header>
+
+        <!-- Right: scrolls -->
+        <main class="right" id="main">
+            <section id="about">
+                <h2 class="lab">About</h2>
+                <div class="about">
+                    <p><span class="eth">ሰላም</span>. I'm Dawit. I enjoy <b>tinkering around</b>, and I have a lot of interests, ranging from <b>philosophy</b> to <b>technology</b>.</p>
+                    <p>I love exploring new technologies, building projects, messing around with stuff and trying to <b>link different ideas together</b>.</p>
                 </div>
-                <ol class="rows stagger" id="experience-list">
-                    <!-- Loaded dynamically from assets/data/experience.json -->
+            </section>
+
+            <section id="work">
+                <h2 class="lab">Work</h2>
+                <ol class="jobs" id="experience-list">
+                    <!-- Loaded from assets/data/experience.json -->
                 </ol>
-            </div>
-        </div>
-    </section>
+            </section>
 
-    <section class="sheet fold" id="publications">
-        <h2 class="fold-h">
-            <button type="button" class="fold-head" aria-expanded="false" aria-controls="publications-body">
-                <span class="fold-num">03</span>
-                <span class="fold-title">Publications</span>
-                <span class="fold-meta" id="publications-meta"></span>
-                <span class="fold-icon" aria-hidden="true"></span>
-            </button>
-        </h2>
-        <div class="fold-body" id="publications-body" role="region" aria-label="Publications">
-            <div class="fold-inner">
-                <ol class="rows stagger" id="publications-list">
-                    <!-- Loaded dynamically from assets/data/publications.json -->
-                </ol>
-            </div>
-        </div>
-    </section>
+            <section id="publications">
+                <h2 class="lab">Publications</h2>
+                <ul class="wrt" id="publications-list">
+                    <!-- Loaded from assets/data/publications.json -->
+                </ul>
+            </section>
 
-    <section class="sheet fold" id="playlists">
-        <h2 class="fold-h">
-            <button type="button" class="fold-head" aria-expanded="false" aria-controls="playlists-body">
-                <span class="fold-num">04</span>
-                <span class="fold-title">Music</span>
-                <span class="fold-meta" id="playlists-meta"></span>
-                <span class="fold-icon" aria-hidden="true"></span>
-            </button>
-        </h2>
-        <div class="fold-body" id="playlists-body" role="region" aria-label="Music">
-            <div class="fold-inner">
-                <div class="pl">
-                    <div class="deck" id="deck">
-                        <div class="deck-top">
-                            <span class="deck-tag">Now playing</span>
-                            <span class="deck-count" id="deck-count">04.1</span>
-                        </div>
-                        <p class="deck-title" id="deck-title">Press play</p>
-                        <p class="deck-by" id="deck-by">&nbsp;</p>
-                        <div class="deck-controls">
-                            <button type="button" class="deck-btn" id="deck-prev" aria-label="Previous">◀◀</button>
-                            <button type="button" class="deck-btn deck-play" id="deck-play" aria-label="Play">▶</button>
-                            <button type="button" class="deck-btn" id="deck-next" aria-label="Next">▶▶</button>
-                            <div class="deck-bar" aria-hidden="true"><div class="deck-bar-fill" id="deck-bar"></div></div>
-                            <span class="deck-time" id="deck-time">0:00</span>
-                            <a class="deck-link" id="deck-link" href="#" target="_blank" rel="noopener" hidden>Open on Bandcamp ↗</a>
-                        </div>
-                        <div class="deck-embed">
-                            <div id="spotify-slot"><div id="spotify-embed"></div></div>
-                            <div id="bandcamp-embed" hidden></div>
-                        </div>
-                    </div>
-
-                    <div class="pl-side">
-                        <div class="pl-filters" id="pl-filters" role="group" aria-label="Filter"></div>
-                        <ul class="covers stagger" id="playlist-list">
-                            <!-- Loaded dynamically from assets/data/playlists.json -->
-                        </ul>
-                    </div>
+            <section id="music">
+                <h2 class="lab">Music</h2>
+                <div class="albums" id="albums">
+                    <!-- Loaded from assets/data/playlists.json (tracklists: python tools/bandcamp-tracks.py) -->
                 </div>
+            </section>
 
-                <!-- Hidden while the email is off the site. To turn it back on: remove "hidden" and set data-to to the address. -->
-                <form class="recommend" id="recommend" data-to="" hidden>
-                    <h3 class="label">Recommend<br>a song</h3>
-                    <p class="micro">Heard something I should? Leave it here. It opens your email, addressed to me.</p>
-                    <div class="fields">
-                        <label><span>Song</span><input name="song" required></label>
-                        <label><span>Artist</span><input name="artist" required></label>
-                        <label><span>Your name</span><input name="name"></label>
-                        <label class="wide"><span>Why</span><input name="why"></label>
-                    </div>
-                    <button type="submit" class="btn">Recommend →</button>
-                </form>
-            </div>
-        </div>
-    </section>
+            <section id="network">
+                <h2 class="lab">Network</h2>
+                <ul class="ppl" id="network-list">
+                    <!-- Loaded from assets/data/network.json -->
+                </ul>
+            </section>
 
-    <section class="sheet fold" id="network">
-        <h2 class="fold-h">
-            <button type="button" class="fold-head" aria-expanded="false" aria-controls="network-body">
-                <span class="fold-num">05</span>
-                <span class="fold-title">Network</span>
-                <span class="fold-meta" id="network-meta"></span>
-                <span class="fold-icon" aria-hidden="true"></span>
-            </button>
-        </h2>
-        <div class="fold-body" id="network-body" role="region" aria-label="Network">
-            <div class="fold-inner">
-                <div class="net">
-                    <figure class="net-map">
-                        <svg id="network-map" viewBox="0 0 400 400" aria-hidden="true"></svg>
-                        <figcaption class="net-key">
-                            <span><i class="key-know"></i><i class="key-find"></i>The closer the ring, the closer we are</span>
-                        </figcaption>
-                        <button type="button" class="btn net-jump" id="network-jump" hidden>Take me somewhere ↗</button>
-                    </figure>
-                    <ol class="net-list stagger" id="network-list">
-                        <!-- Loaded dynamically from assets/data/network.json -->
-                    </ol>
-                </div>
-            </div>
-        </div>
-    </section>
+            <footer class="fin">
+                <p>© <span id="year">2026</span> Dawit Sharon</p>
+            </footer>
+        </main>
+    </div>
 
-    <!-- 06 / Socials -->
-    <footer class="sheet socials-foot" id="socials">
-        <div class="foot-head">
-            <span class="sec-num">06</span>
-            <h2 class="foot-title">Find me</h2>
-        </div>
-        <ul class="socials socials-big" data-socials data-labels aria-label="Socials"></ul>
-        <p class="micro fine">© Dawit Sharon · <a href="#top">Back to top ↑</a></p>
-    </footer>
-
-    <!-- Mini player: slides up while a song plays and Music is closed or out of view -->
-    <aside class="mini" id="mini" aria-label="Now playing" aria-hidden="true">
-        <button type="button" class="mini-art" id="mini-open" aria-label="Back to Music" tabindex="-1"><img alt=""></button>
-        <div class="mini-text">
-            <span class="mini-kicker">Now playing</span>
-            <span class="mini-title" id="mini-title"></span>
-            <span class="mini-by" id="mini-by"></span>
-        </div>
-        <div class="mini-ctrl">
-            <button type="button" class="mini-btn" id="mini-prev" aria-label="Previous" tabindex="-1">◀◀</button>
-            <button type="button" class="mini-btn mini-play" id="mini-play" aria-label="Pause" tabindex="-1">❚❚</button>
-            <button type="button" class="mini-btn" id="mini-next" aria-label="Next" tabindex="-1">▶▶</button>
-        </div>
-        <button type="button" class="mini-close" id="mini-close" aria-label="Stop the music" tabindex="-1">■</button>
-        <span class="mini-bar" aria-hidden="true"><i id="mini-bar"></i></span>
-    </aside>
-
-    <script src="assets/js/main.js?v=20261116a"></script>
-    <script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
+    <script src="assets/js/main.js?v=20261117c"></script>
 </body>
 
 </html>

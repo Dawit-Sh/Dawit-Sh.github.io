@@ -1,3 +1,5 @@
+// dawitsh.dev, design D (2026-11-17). Everything on the page comes from assets/data/*.json.
+
 // Escape text from the data files before it goes into HTML
 function esc(value) {
   return String(value ?? '').replace(/[&<>"']/g, (c) => ({
@@ -8,745 +10,278 @@ function esc(value) {
 async function loadJSON(path) {
   // revalidate every visit so edited lists show up right away (GitHub Pages caches for 10 minutes)
   const response = await fetch(path, { cache: 'no-cache' });
-  if (!response.ok) {
-    throw new Error(`Failed to load ${path}: ${response.status} ${response.statusText}`);
-  }
+  if (!response.ok) throw new Error(`Failed to load ${path}: ${response.status} ${response.statusText}`);
   return response.json();
 }
 
-function showError(list, what, error) {
+function showError(el, what, error) {
   console.error(`Error loading ${what}:`, error);
-  list.innerHTML = `
-    <li class="error-message">
-      <p>Failed to load ${what}.</p>
-      <small>${esc(error.message)}</small>
-    </li>
-  `;
+  el.innerHTML = `<li class="info">Couldn't load ${esc(what)} right now.</li>`;
 }
 
-function setMeta(id, text) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = text;
-}
-
-// ---------- Folds: one strip open at a time ----------
-const folds = [...document.querySelectorAll('.fold')];
-const foldOpeners = {};   // id -> callback run the first time a fold opens
-
-function setFold(fold, open) {
-  const head = fold.querySelector('.fold-head');
-  fold.classList.toggle('is-open', open);
-  head.setAttribute('aria-expanded', String(open));
-  if (open) {
-    // replay the red wipe across the strip
-    fold.classList.remove('is-wiping');
-    void fold.offsetWidth;
-    fold.classList.add('is-wiping');
-    if (foldOpeners[fold.id]) {
-      foldOpeners[fold.id]();
-      delete foldOpeners[fold.id];
-    }
-  }
-  window.dispatchEvent(new Event('foldchange'));
-}
-
-function openFold(id, scroll) {
-  const fold = document.getElementById(id);
-  if (!fold || !fold.classList.contains('fold')) return;
-  folds.forEach((f) => { if (f !== fold && f.classList.contains('is-open')) setFold(f, false); });
-  if (!fold.classList.contains('is-open')) setFold(fold, true);
-  if (scroll) {
-    // wait for the other strips to fold away before measuring
-    setTimeout(() => fold.scrollIntoView({ behavior: 'smooth', block: 'start' }), 380);
-  }
-}
-
-folds.forEach((fold) => {
-  fold.querySelector('.fold-head').addEventListener('click', () => {
-    if (fold.classList.contains('is-open')) setFold(fold, false);
-    else openFold(fold.id, true);
-  });
-  fold.addEventListener('animationend', (e) => {
-    if (e.animationName === 'wipe') fold.classList.remove('is-wiping');
-  });
-});
-
-document.querySelectorAll('a[data-fold]').forEach((link) => {
-  link.addEventListener('click', (e) => {
-    e.preventDefault();
-    openFold(link.dataset.fold, true);
-    history.replaceState(null, '', `#${link.dataset.fold}`);
-  });
-});
-
-// Number the rows so CSS can stagger them in when a fold opens
-function numberRows(list) {
-  [...list.children].forEach((child, i) => child.style.setProperty('--i', i));
-}
-
-// ---------- Experience ----------
-const experienceList = document.getElementById('experience-list');
-
-async function loadExperience() {
-  if (!experienceList) return;
-
-  try {
-    const data = await loadJSON('assets/data/experience.json');
-
-    if (!Array.isArray(data) || data.length === 0) {
-      experienceList.innerHTML = '<li class="info">No work experience found.</li>';
-      return;
-    }
-
-    experienceList.innerHTML = data.map((exp, i) => `
-      <li class="row" data-art="${esc(exp.art || artFor(exp.role))}">
-        <span class="row-meta">02.${i + 1}</span>
-        <div class="row-main">
-          <h3>${esc(exp.role)}</h3>
-          <p>${esc(exp.company)}</p>
-          ${exp.description ? `<p class="note">${esc(exp.description)}</p>` : ''}
-          ${exp.details ? `<ul>${exp.details.map(detail => `<li>${esc(detail)}</li>`).join('')}</ul>` : ''}
-        </div>
-        <span class="row-side">${esc(exp.date)}</span>
-      </li>
-    `).join('');
-    numberRows(experienceList);
-    setupExpStage();
-
-    const years = data.flatMap((exp) => String(exp.date).match(/\d{4}/g) || []).map(Number);
-    const present = data.some((exp) => /present/i.test(exp.date));
-    const span = years.length ? `${Math.min(...years)}–${present ? 'now' : Math.max(...years)}` : '';
-    setMeta('experience-meta', [`${data.length} roles`, span].filter(Boolean).join(' · '));
-  } catch (error) {
-    showError(experienceList, 'work experience', error);
-  }
-}
-
-// A photo for each role (assets/exp/<art>.webp); "art" in experience.json picks one, else the role's words do
-function artFor(role) {
-  const r = String(role).toLowerCase();
-  if (/ghost|writ/.test(r)) return 'pen';
-  if (/ugc|video/.test(r)) return 'editor';
-  if (/carpent|wood/.test(r)) return 'carpentry';
-  if (/legacy|c\/c\+\+|maintain/.test(r)) return 'legacy';
-  if (/full-stack|marketplace/.test(r)) return 'stack';
-  if (/fitness|frontend/.test(r)) return 'fitness';
-  return 'web';
-}
-
-// The stage glides to the row under the pointer and shows that row's photo
-function setupExpStage() {
-  const stage = document.getElementById('exp-stage');
-  if (!stage) return;
-  const img = stage.querySelector('img');
-  const [capNum, capRole] = stage.querySelectorAll('.exp-cap span');
-  const rows = [...experienceList.querySelectorAll('.row')];
-  let current = null;
-
-  function place(row) {
-    const list = experienceList;
-    const top = list.offsetTop;
-    const max = top + list.offsetHeight - stage.offsetHeight;
-    const y = row.offsetTop + row.offsetHeight / 2 - stage.offsetHeight / 2;
-    stage.style.setProperty('--y', `${Math.max(top, Math.min(max, y))}px`);
-  }
-
-  function show(row) {
-    if (row !== current) {
-      current = row;
-      img.src = `assets/exp/${row.dataset.art}.webp`;
-      capNum.textContent = row.querySelector('.row-meta')?.textContent || '';
-      capRole.textContent = row.querySelector('h3')?.textContent || '';
-      stage.classList.remove('is-swapping');
-      void stage.offsetWidth;
-      stage.classList.add('is-swapping');
-    }
-    place(row);
-    stage.classList.add('is-on');
-  }
-
-  rows.forEach((row) => {
-    row.addEventListener('mouseenter', () => show(row));
-    row.addEventListener('focusin', () => show(row));
-  });
-  // the first role is up when the strip opens; the rest load then too, so hovering is instant
-  foldOpeners.experience = () => setTimeout(() => {
-    rows.forEach((row) => { new Image().src = `assets/exp/${row.dataset.art}.webp`; });
-    if (rows[0]) show(rows[0]);
-  }, 60);
-  window.addEventListener('resize', () => current && place(current));
-}
-
-// ---------- Publications ----------
-const publicationsList = document.getElementById('publications-list');
-
-async function loadPublications() {
-  if (!publicationsList) return;
-
-  try {
-    const data = await loadJSON('assets/data/publications.json');
-
-    if (!Array.isArray(data) || data.length === 0) {
-      publicationsList.innerHTML = '<li class="info">No publications found.</li>';
-      return;
-    }
-
-    publicationsList.innerHTML = data.map((pub, i) => {
-      const actions = [];
-      if (pub.url) {
-        actions.push(`<a href="${esc(pub.url)}" target="_blank" rel="noopener noreferrer">View online ↗</a>`);
-      }
-      if (pub.pdf) {
-        actions.push(`<a href="${esc(pub.pdf)}" target="_blank" rel="noopener noreferrer" download>Download PDF ↓</a>`);
-      }
-      return `
-        <li class="row">
-          <span class="row-meta">03.${i + 1}</span>
-          <div class="row-main">
-            <h3>${esc(pub.title)}</h3>
-            <p>${esc(pub.venue)}</p>
-            ${actions.length > 0 ? `<div class="row-links">${actions.join('')}</div>` : ''}
-          </div>
-          <span class="row-side"></span>
-        </li>
-      `;
-    }).join('');
-    numberRows(publicationsList);
-
-    const years = data.flatMap((pub) => String(pub.venue).match(/\b(19|20)\d{2}\b/g) || []).map(Number);
-    setMeta('publications-meta', [`${data.length} ${data.length === 1 ? 'paper' : 'papers'}`,
-      years.length ? Math.max(...years) : ''].filter(Boolean).join(' · '));
-  } catch (error) {
-    showError(publicationsList, 'publications', error);
-  }
-}
-
-// ---------- Network: assets/data/network.json, drawn as a map around me ----------
-// "ring": 1 is the inner ring, the closest people; 2, 3... sit further out
-const networkList = document.getElementById('network-list');
-const networkMap = document.getElementById('network-map');
-const networkJump = document.getElementById('network-jump');
-const SVG_NS = 'http://www.w3.org/2000/svg';
-
-function hostOf(url) {
+function domain(url) {
   try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return url; }
 }
 
-function initialsOf(name) {
-  const words = String(name).replace(/\.[a-z]+$/i, '').split(/[\s._-]+/).filter(Boolean);
-  return (words.length > 1 ? words[0][0] + words[words.length - 1][0] : words[0]?.slice(0, 2) || '?').toUpperCase();
+// ---------- Theme: dark by default, the visitor's choice is remembered ----------
+const root = document.documentElement;
+const themeBtn = document.getElementById('theme-toggle');
+
+function paintThemeButton() {
+  const dark = root.dataset.theme !== 'light';
+  themeBtn.querySelector('.theme-label').textContent = dark ? 'Light' : 'Dark';
+  themeBtn.setAttribute('aria-label', dark ? 'Switch to the light theme' : 'Switch to the dark theme');
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#0f1012' : '#f7f7f8');
 }
 
-function svgEl(tag, attrs, parent) {
-  const el = document.createElementNS(SVG_NS, tag);
-  Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
-  parent?.appendChild(el);
-  return el;
+function setTheme(next) {
+  root.dataset.theme = next;
+  try { localStorage.setItem('theme', next); } catch { /* fine: it just won't be remembered */ }
+  paintThemeButton();
 }
 
-function drawNetwork(people) {
-  const C = 200;
-  const count = Math.max(2, ...people.map((p) => p.ringNo));
-  const radius = (n) => 78 + ((n - 1) * (170 - 78)) / (count - 1);
-  networkMap.replaceChildren();
-  for (let n = 1; n <= count; n++) {
-    svgEl('circle', { cx: C, cy: C, r: radius(n), class: `net-ring net-ring-${n}` }, networkMap);
+// The switch fades the whole page from one theme to the other (a view transition where the
+// browser has it, a colour transition on every element where it doesn't, nothing for reduced motion)
+themeBtn?.addEventListener('click', () => {
+  const next = root.dataset.theme === 'light' ? 'dark' : 'light';
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (still) {
+    setTheme(next);
+  } else if (document.startViewTransition) {
+    document.startViewTransition(() => setTheme(next));
+  } else {
+    root.classList.add('theming');
+    setTheme(next);
+    setTimeout(() => root.classList.remove('theming'), 600);
   }
+  recolorPlayer();
+});
+if (themeBtn) paintThemeButton();
 
-  const wires = svgEl('g', { class: 'net-wires' }, networkMap);
-  const nodes = svgEl('g', { class: 'net-nodes' }, networkMap);
+// ---------- The section list on the left follows the scroll ----------
+const tocLinks = [...document.querySelectorAll('.toc a')];
+const sections = tocLinks.map((a) => document.querySelector(a.getAttribute('href'))).filter(Boolean);
 
-  // golden-angle steps spread everyone around me without two landing on one bearing
-  const spots = people.map((p, i) => {
-    const a = -Math.PI / 2 + i * 2.39996;
-    const r = radius(p.ringNo);
-    return { x: C + Math.cos(a) * r, y: C + Math.sin(a) * r, len: r };
-  });
-  // the circles shrink as the map fills up, so they never sit on top of each other
-  let gap = Infinity;
-  spots.forEach((s, i) => spots.slice(i + 1).forEach((t) => { gap = Math.min(gap, Math.hypot(s.x - t.x, s.y - t.y)); }));
-  const dot = Math.max(9, Math.min(19, gap / 2 - 2));
-
-  people.forEach((p, i) => {
-    const { x, y, len } = spots[i];
-    const step = Math.min(i, 12);   // keep the draw-in short however long the list gets
-    svgEl('line', {
-      x1: C, y1: C, x2: x.toFixed(1), y2: y.toFixed(1), class: 'net-wire', 'data-k': i,
-      style: `--len:${len.toFixed(0)};--i:${step}`,
-    }, wires);
-    const link = svgEl('a', { href: p.url, target: '_blank', rel: 'noopener noreferrer', tabindex: '-1',
-      class: 'net-node', 'data-k': i, style: `--i:${step}` }, nodes);
-    svgEl('title', {}, link).textContent = `${p.name} · ${p.host}`;
-    svgEl('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: dot.toFixed(1) }, link);
-    svgEl('text', { x: x.toFixed(1), y: (y + dot * 0.29).toFixed(1), 'text-anchor': 'middle',
-      style: `font-size:${(dot * 0.9).toFixed(1)}px` }, link).textContent = initialsOf(p.name);
-  });
-
-  // me in the middle
-  const me = svgEl('g', { class: 'net-me' }, networkMap);
-  svgEl('circle', { cx: C, cy: C, r: 34, class: 'net-pulse' }, me);
-  svgEl('circle', { cx: C, cy: C, r: 27 }, me);
-  svgEl('text', { x: C, y: C + 7.5, 'text-anchor': 'middle' }, me).textContent = 'DS';
+if (sections.length && 'IntersectionObserver' in window) {
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      tocLinks.forEach((a) => a.classList.toggle('on', a.getAttribute('href') === `#${entry.target.id}`));
+    });
+  }, { rootMargin: '-35% 0px -60% 0px' });
+  sections.forEach((s) => io.observe(s));
 }
 
-// light up a person's row, wire and node together
-function hotNetwork(k, on) {
-  document.querySelectorAll(`#network [data-k="${k}"]`).forEach((el) => el.classList.toggle('is-hot', on));
-}
-
-async function loadNetwork() {
-  if (!networkList || !networkMap) return;
-
+// ---------- Work (assets/data/experience.json) ----------
+async function loadExperience() {
+  const list = document.getElementById('experience-list');
+  if (!list) return;
   try {
-    const data = await loadJSON('assets/data/network.json');
-    const people = (Array.isArray(data) ? data : [])
-      .map((p) => (typeof p === 'string' ? { url: p } : p))
-      .filter((p) => p && p.url)
-      .map((p) => ({ ...p, host: hostOf(p.url), name: p.name || hostOf(p.url),
-        ringNo: Math.max(1, Math.round(Number(p.ring)) || 1) }));
-
-    drawNetwork(people);
-
-    if (people.length === 0) {
-      networkList.innerHTML = '<li class="info">Links coming soon.</li>';
-      setMeta('network-meta', 'coming soon');
-      return;
-    }
-
-    // compact tiles in ring order (file order inside a ring), so a long list stays short and easy to scan
-    const order = people.map((p, i) => ({ p, i })).sort((a, b) => a.p.ringNo - b.p.ringNo || a.i - b.i);
-    networkList.innerHTML = order.map(({ p, i }) => `
-      <li class="net-row" data-k="${i}">
-        <a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">
-          <span class="row-meta">05.${i + 1}<em>Ring ${p.ringNo}</em></span>
-          <span class="net-arrow" aria-hidden="true">↗</span>
-          <span class="net-name">${esc(p.name)}</span>
-          <span class="net-host">${esc(p.host)}</span>
-          ${p.note ? `<span class="net-note">${esc(p.note)}</span>` : ''}
-        </a>
-      </li>
-    `).join('');
-    numberRows(networkList);
-
-    networkList.querySelectorAll('.net-row').forEach((row) => {
-      const k = row.dataset.k;
-      ['mouseenter', 'focusin'].forEach((ev) => row.addEventListener(ev, () => hotNetwork(k, true)));
-      ['mouseleave', 'focusout'].forEach((ev) => row.addEventListener(ev, () => hotNetwork(k, false)));
-    });
-    networkMap.querySelectorAll('.net-node').forEach((node) => {
-      const k = node.dataset.k;
-      node.addEventListener('mouseenter', () => hotNetwork(k, true));
-      node.addEventListener('mouseleave', () => hotNetwork(k, false));
-    });
-
-    setMeta('network-meta', `${people.length} ${people.length === 1 ? 'person' : 'people'}`);
-
-    if (networkJump) {
-      networkJump.hidden = false;
-      networkJump.addEventListener('click', () => {
-        const p = people[Math.floor(Math.random() * people.length)];
-        hotNetwork(people.indexOf(p), true);
-        setTimeout(() => hotNetwork(people.indexOf(p), false), 900);
-        window.open(p.url, '_blank', 'noopener');
-      });
-    }
+    const rows = await loadJSON('assets/data/experience.json');
+    list.innerHTML = rows.map((r) => `
+      <li class="job">
+        <span class="yr">${esc(String(r.date || '').replace(/\s*-\s*/g, ' – ').replace(/Present/i, 'Now'))}</span>
+        <div><div class="ro">${esc(r.role)}</div><div class="co">${esc(r.company)}</div></div>
+      </li>`).join('');
   } catch (error) {
-    showError(networkList, 'network', error);
+    showError(list, 'work experience', error);
   }
 }
 
-// ---------- Socials: assets/data/socials.json, links left empty stay hidden ----------
-async function loadSocials() {
-  const lists = document.querySelectorAll('[data-socials]');
-  if (!lists.length) return;
-
+// ---------- Publications (publications.json) ----------
+async function loadPublications() {
+  const list = document.getElementById('publications-list');
+  if (!list) return;
   try {
-    const data = (await loadJSON('assets/data/socials.json')).filter((s) => s.url);
-    lists.forEach((list) => {
-      const labels = list.hasAttribute('data-labels');
-      list.innerHTML = data.map((s, i) => `
-        <li style="--i:${i}">
-          <a class="social" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(s.name)}" title="${esc(s.name)}">
-            <span class="ico" style="-webkit-mask-image:url('assets/icons/${esc(s.icon)}.svg');mask-image:url('assets/icons/${esc(s.icon)}.svg')" aria-hidden="true"></span>
-            ${labels ? `<span class="social-name">${esc(s.name)}</span>` : ''}
-          </a>
-        </li>
-      `).join('');
-    });
+    const pubs = await loadJSON('assets/data/publications.json');
+    list.innerHTML = pubs.map((p) => {
+      const year = (String(p.venue || '').match(/(19|20)\d{2}(?!.*\d{4})/) || [''])[0];
+      const venue = String(p.venue || '').replace(/,?\s*(19|20)\d{2}\s*$/, '');
+      return `<li><a href="${esc(p.url || p.pdf || '#')}" target="_blank" rel="noopener">
+        <span class="t">${esc(p.title)}<span class="v">${esc(venue)}</span></span><span class="y">${esc(year)}</span></a></li>`;
+    }).join('') || '<li class="info">Nothing here yet.</li>';
   } catch (error) {
-    console.error('Error loading socials:', error);
+    showError(list, 'publications', error);
   }
 }
 
-// ---------- Music: my own albums (Bandcamp) and Spotify links, played in the deck ----------
-// assets/data/playlists.json takes plain Spotify links, {"spotify": link, "by": "...", "note": "..."},
-// or my own albums: {"bandcamp": page, "album": numeric id, "title", "by", "image"}.
-// Spotify titles and cover art come from Spotify's public oEmbed and are cached in the browser.
-// Bandcamp has no player API, so its own embed takes over the deck and its own buttons play it.
-const playlistList = document.getElementById('playlist-list');
-const playlistFilters = document.getElementById('pl-filters');
-const deck = {
-  title: document.getElementById('deck-title'),
-  by: document.getElementById('deck-by'),
-  count: document.getElementById('deck-count'),
-  play: document.getElementById('deck-play'),
-  prev: document.getElementById('deck-prev'),
-  next: document.getElementById('deck-next'),
-  bar: document.getElementById('deck-bar'),
-  time: document.getElementById('deck-time'),
-  link: document.getElementById('deck-link'),
-  el: document.getElementById('deck'),
-  spotify: document.getElementById('spotify-slot'), // Spotify's API swaps the embed div for its iframe
-  bandcamp: document.getElementById('bandcamp-embed'),
-};
+// ---------- Music (playlists.json; tracklists filled by tools/bandcamp-tracks.py) ----------
+const albumsEl = document.getElementById('albums');
+let albums = [];
+let playing = null;   // { a: album index, track: track id or null }
 
-const TYPE_LABELS = { mine: 'Mine', track: 'Song', album: 'Album', playlist: 'Playlist', artist: 'Artist', episode: 'Episode', show: 'Podcast' };
-
-function kindLabel(entry) {
-  return entry.bandcamp ? 'Bandcamp' : TYPE_LABELS[entry.type];
-}
-
-// Shows the Bandcamp player for my own albums, the Spotify one for everything else
-function showSource() {
-  const entry = entries[current];
-  if (!entry || !deckWanted) return;
-  const bc = Boolean(entry.bandcamp);
-  deck.el.classList.toggle('is-bc', bc);
-  deck.spotify.hidden = bc;
-  deck.bandcamp.hidden = !bc;
-  if (deck.link) {
-    deck.link.hidden = !bc;
-    if (bc) deck.link.href = entry.bandcamp;
-  }
-  if (!bc) return;
-  controller?.pause();
-  hasPlayed = false;
-  updateMini();
-  const src = `https://bandcamp.com/EmbeddedPlayer/album=${entry.id}/size=large/bgcol=333333/linkcol=ff1a00/tracklist=false/artwork=small/transparent=true/`;
-  const frame = deck.bandcamp.querySelector('iframe');
-  if (frame && frame.src === src) return;
-  deck.bandcamp.innerHTML = `<iframe src="${src}" title="${esc(entry.title)} on Bandcamp" height="120" loading="lazy" seamless></iframe>`;
-}
-const CACHE_DAYS = 14;
-
-let entries = [];
-let current = 0;
-let controller = null;
-let spotifyAPI = null;
-let deckWanted = false;   // the embed is only built once the fold has been opened
-let isPaused = true;
-let hasPlayed = false;    // the mini player only shows up once something has played
-
-// "https://open.spotify.com/intl-de/album/ID?si=..." -> { type: "album", id: "ID" }
-function parseSpotify(link) {
-  const match = String(link).match(/open\.spotify\.com\/(?:intl-[a-z-]+\/)?(track|album|playlist|artist|episode|show)\/([A-Za-z0-9]+)/);
-  return match ? { type: match[1], id: match[2] } : null;
-}
-
-function formatTime(ms) {
-  const s = Math.max(0, Math.floor(ms / 1000));
+function mmss(secs) {
+  const s = Math.max(0, Math.round(secs));
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 }
 
-function readCache(key) {
-  try {
-    const hit = JSON.parse(localStorage.getItem(key) || 'null');
-    return hit && Date.now() - hit.at < CACHE_DAYS * 864e5 ? hit : null;
-  } catch {
-    return null;
-  }
+function niceDate(iso) {
+  const d = new Date(`${iso}T00:00:00Z`);
+  return isNaN(d) ? '' : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 }
 
-function writeCache(key, value) {
-  try {
-    localStorage.setItem(key, JSON.stringify({ ...value, at: Date.now() }));
-  } catch {
-    // private mode or storage full: just fetch again next time
-  }
+function isNew(iso) {
+  const d = new Date(`${iso}T00:00:00Z`);
+  return !isNaN(d) && (Date.now() - d) / 864e5 < 45;
 }
 
-async function fetchSpotifyMeta(entry) {
-  const key = `oembed:${entry.type}:${entry.id}`;
-  const cached = readCache(key);
-  if (cached) return cached;
-  const url = `https://open.spotify.com/oembed?url=${encodeURIComponent(`https://open.spotify.com/${entry.type}/${entry.id}`)}`;
-  const response = await fetch(url);
-  if (!response.ok) throw new Error(`oEmbed ${response.status}`);
-  const data = await response.json();
-  const meta = { title: data.title, image: data.thumbnail_url };
-  writeCache(key, meta);
-  return meta;
+function playerSrc(album, track) {
+  const css = getComputedStyle(root);
+  const bg = css.getPropertyValue('--bc-bg').trim() || '333333';
+  const link = css.getPropertyValue('--bc-link').trim() || 'ff3b1f';
+  return `https://bandcamp.com/EmbeddedPlayer/album=${album}/size=large/bgcol=${bg}/linkcol=${link}/tracklist=false/artwork=small/${track ? `track=${track}/` : ''}transparent=true/`;
 }
 
-function entryBy(entry) {
-  return entry.by || TYPE_LABELS[entry.type];
+// Every album is one collapsed row (cover, title, details); its tracklist opens on click.
+// Newest release first, so a new album just goes to the top of the stack.
+function renderAlbums() {
+  albumsEl.innerHTML = albums.map((a, i) => {
+    const tracks = a.tracks || [];
+    const total = tracks.reduce((sum, t) => sum + (t.secs || 0), 0);
+    const meta = [
+      i === 0 && a.released && isNew(a.released) ? '<span class="new">Out now</span>' : '',
+      a.by ? esc(a.by) : '',
+      a.released ? esc(niceDate(a.released)) : '',
+      tracks.length ? `${tracks.length} tracks` : '',
+      total ? mmss(total) : '',
+    ].filter(Boolean).join(' · ');
+    return `
+      <article class="alb" data-i="${i}">
+        <button type="button" class="art" data-play aria-label="Play ${esc(a.title)}">
+          <img src="${esc(a.image || '')}" alt="" loading="lazy" decoding="async"><span class="pl" aria-hidden="true">▶</span>
+        </button>
+        <div class="alb-body">
+          <button type="button" class="alb-head" aria-expanded="false" aria-controls="tl-${i}">
+            <span class="ttl eth">${esc(a.title)}</span>
+            <span class="meta">${meta}</span>
+            <span class="tog"><span class="tog-label">Tracklist</span><span class="chev" aria-hidden="true"></span></span>
+          </button>
+          <div class="player" hidden></div>
+          <div class="tl-wrap" id="tl-${i}" hidden>
+            <ol class="tl">
+              ${tracks.map((t) => `
+                <li><button type="button" data-track="${t.id}">
+                  <span class="n">${String(t.n).padStart(2, '0')}</span><span class="t">${esc(t.title)}</span><span class="d">${mmss(t.secs)}</span>
+                </button></li>`).join('')}
+            </ol>
+            <a class="bc-link" href="${esc(a.bandcamp)}" target="_blank" rel="noopener">Open on Bandcamp ↗</a>
+          </div>
+        </div>
+      </article>`;
+  }).join('');
 }
 
-function showEntry(index) {
-  const entry = entries[index];
-  if (!entry) return;
-  deck.title.textContent = entry.title || TYPE_LABELS[entry.type];
-  deck.by.textContent = [entry.by, kindLabel(entry)].filter(Boolean).join(' · ');
-  deck.count.textContent = `04.${index + 1} / ${entries.length}`;
-  paintMini();
-  playlistList.querySelectorAll('.cover').forEach((cover, i) => {
-    cover.classList.toggle('is-active', i === index);
-    cover.setAttribute('aria-pressed', String(i === index));
+function setOpen(el, open) {
+  const head = el.querySelector('.alb-head');
+  el.classList.toggle('open', open);
+  head.setAttribute('aria-expanded', String(open));
+  head.querySelector('.tog-label').textContent = open ? 'Hide tracklist' : 'Tracklist';
+  el.querySelector('.tl-wrap').hidden = !open;
+}
+
+// Bandcamp's own player plays the album (or the picked track); only one is ever on the page
+function play(i, track) {
+  const same = playing && playing.a === i && playing.track === (track || null);
+  albumsEl.querySelectorAll('.alb').forEach((el) => {
+    el.classList.remove('on');
+    const p = el.querySelector('.player');
+    p.hidden = true;
+    p.innerHTML = '';
   });
-}
-
-function select(index, autoplay) {
-  if (!entries.length) return;
-  current = (index + entries.length) % entries.length;
-  showEntry(current);
-  deck.bar.style.width = '0';
-  deck.time.textContent = '0:00';
-  showSource();
-  if (entries[current].bandcamp) return;
-  if (controller) {
-    controller.loadUri(entries[current].uri);
-    if (autoplay) controller.play();
-  } else {
-    buildDeck(autoplay);
-  }
-}
-
-function buildDeck(autoplay) {
-  const element = document.getElementById('spotify-embed');
-  // the Spotify player starts on the selected entry, or the first Spotify one while my own album is up
-  const first = entries[current]?.uri ? entries[current] : entries.find((e) => e.uri);
-  if (!spotifyAPI || !deckWanted || controller || !element || !first) return;
-  spotifyAPI.createController(element, { uri: first.uri, width: '100%', height: 152 }, (ctrl) => {
-    controller = ctrl;
-    controller.addListener('playback_update', (e) => {
-      isPaused = e.data.isPaused;
-      if (!isPaused) hasPlayed = true;
-      [deck.play, mini.play].forEach((btn) => {
-        if (!btn) return;
-        btn.textContent = isPaused ? '▶' : '❚❚';
-        btn.setAttribute('aria-label', isPaused ? 'Play' : 'Pause');
-      });
-      if (e.data.duration) {
-        const done = `${Math.min(100, (e.data.position / e.data.duration) * 100)}%`;
-        deck.bar.style.width = done;
-        if (mini.bar) mini.bar.style.width = done;
-        deck.time.textContent = formatTime(e.data.position);
-      }
-      updateMini();
-    });
-    if (autoplay && !entries[current].bandcamp) controller.play();
-  });
-}
-
-// Called by Spotify's iframe API script once it has loaded
-window.onSpotifyIframeApiReady = (IFrameAPI) => {
-  spotifyAPI = IFrameAPI;
-  buildDeck(false);
-};
-
-foldOpeners.playlists = () => {
-  deckWanted = true;
-  showSource();
-  buildDeck(false);
-};
-
-function renderFilters() {
-  const types = [...new Set(entries.map((e) => e.type))];
-  if (types.length < 2) {
-    playlistFilters.hidden = true;
+  albumsEl.querySelectorAll('.tl button.cur').forEach((b) => b.classList.remove('cur'));
+  if (same) {   // a second click on the same thing puts the player away
+    playing = null;
     return;
   }
-  playlistFilters.innerHTML = ['all', ...types].map((type) => `
-    <button type="button" class="chip${type === 'all' ? ' is-on' : ''}" data-type="${type}">
-      ${type === 'all' ? 'All' : type === 'mine' ? TYPE_LABELS.mine : `${TYPE_LABELS[type]}s`}
-      <span>${type === 'all' ? entries.length : entries.filter((e) => e.type === type).length}</span>
-    </button>
-  `).join('');
-  playlistFilters.addEventListener('click', (e) => {
-    const chip = e.target.closest('.chip');
-    if (!chip) return;
-    playlistFilters.querySelectorAll('.chip').forEach((c) => c.classList.toggle('is-on', c === chip));
-    playlistList.querySelectorAll('li').forEach((li) => {
-      li.hidden = chip.dataset.type !== 'all' && li.dataset.type !== chip.dataset.type;
-    });
-  });
+  playing = { a: i, track: track || null };
+  const el = albumsEl.querySelector(`.alb[data-i="${i}"]`);
+  const a = albums[i];
+  el.classList.add('on');
+  if (track) el.querySelector(`[data-track="${track}"]`)?.classList.add('cur');
+  const p = el.querySelector('.player');
+  p.hidden = false;
+  p.innerHTML = `<iframe src="${playerSrc(a.album, track)}" title="${esc(a.title)} on Bandcamp" loading="lazy" allow="autoplay" seamless></iframe>
+    <p>Press play in the player. It's Bandcamp's own, so the album supports me directly.</p>`;
 }
 
-function paintCover(index) {
-  const entry = entries[index];
-  const li = playlistList.children[index];
-  if (!li) return;
-  li.querySelector('.cover-title').textContent = entry.title || TYPE_LABELS[entry.type];
-  if (entry.image) {
-    li.querySelector('img').src = entry.image;
-    li.classList.add('has-art');
-  }
-  if (index === current) showEntry(current);
+function recolorPlayer() {
+  if (!playing) return;
+  const frame = albumsEl.querySelector(`.alb[data-i="${playing.a}"] .player iframe`);
+  if (frame) frame.src = playerSrc(albums[playing.a].album, playing.track);
 }
 
-async function loadPlaylists() {
-  if (!playlistList) return;
+albumsEl?.addEventListener('click', (e) => {
+  const el = e.target.closest('.alb');
+  if (!el) return;
+  const i = Number(el.dataset.i);
+  const trackBtn = e.target.closest('[data-track]');
+  if (trackBtn) return play(i, Number(trackBtn.dataset.track));
+  if (e.target.closest('[data-play]')) return play(i, null);
+  if (e.target.closest('.alb-head')) setOpen(el, !el.classList.contains('open'));
+});
 
+async function loadMusic() {
+  if (!albumsEl) return;
   try {
     const data = await loadJSON('assets/data/playlists.json');
-    entries = (Array.isArray(data) ? data : [])
-      .map((item) => (typeof item === 'string' ? { spotify: item } : item))
-      .map((item) => (item.bandcamp
-        ? { ...item, type: 'mine', id: item.album }
-        : { ...item, ...parseSpotify(item.spotify) }))
-      .filter((item) => item.id)
-      .map((item) => (item.bandcamp ? item : { ...item, uri: `spotify:${item.type}:${item.id}` }));
-
-    if (!entries.length) {
-      playlistList.innerHTML = '<li class="info">No playlists yet.</li>';
-      setMeta('playlists-meta', 'Coming soon');
+    albums = (Array.isArray(data) ? data : [])
+      .filter((a) => a && a.bandcamp && a.album)
+      .sort((x, y) => String(y.released || '').localeCompare(String(x.released || '')));
+    if (!albums.length) {
+      albumsEl.innerHTML = '<p class="info">New music soon.</p>';
       return;
     }
-
-    playlistList.innerHTML = entries.map((entry, i) => `
-      <li data-type="${entry.type}" style="--i:${Math.min(i, 24)}">
-        <button type="button" class="cover" data-index="${i}" aria-pressed="false">
-          <span class="cover-art"><img alt="" loading="lazy" decoding="async"></span>
-          <span class="cover-text">
-            <span class="cover-title">${esc(entry.title || TYPE_LABELS[entry.type])}</span>
-            <span class="cover-by">${esc(entryBy(entry))}</span>
-          </span>
-          <span class="cover-num">${String(i + 1).padStart(2, '0')}</span>
-        </button>
-      </li>
-    `).join('');
-
-    playlistList.addEventListener('click', (e) => {
-      const cover = e.target.closest('.cover');
-      if (cover) select(Number(cover.dataset.index), true);
-    });
-
-    renderFilters();
-    showEntry(0);
-    const mine = entries.filter((e) => e.bandcamp).length;
-    const rotation = entries.length - mine;
-    setMeta('playlists-meta', rotation
-      ? [mine && `${mine} of mine · Bandcamp`, `${rotation} on rotation · Spotify`].filter(Boolean).join(' · ')
-      : `${mine} album${mine === 1 ? '' : 's'} · Bandcamp`);
-
-    // Fill in titles and covers as Spotify answers (an explicit "title" in the file wins);
-    // my own albums carry theirs in the file
-    entries.forEach((entry, i) => {
-      if (entry.bandcamp) {
-        paintCover(i);
-        return;
-      }
-      fetchSpotifyMeta(entry)
-        .then((meta) => {
-          entry.title = entry.title || meta.title;
-          entry.image = meta.image;
-          paintCover(i);
-        })
-        .catch((error) => console.warn('Spotify details unavailable for', entry.spotify, error.message));
-    });
+    renderAlbums();
   } catch (error) {
-    showError(playlistList, 'playlists', error);
+    console.error('Error loading music:', error);
+    albumsEl.innerHTML = '<p class="info">Couldn\'t load the music right now.</p>';
   }
 }
 
-deck.play?.addEventListener('click', () => {
-  if (entries[current]?.bandcamp) return;
-  if (controller) controller.togglePlay();
-  else select(current, true);
-});
-deck.prev?.addEventListener('click', () => select(current - 1, !isPaused));
-deck.next?.addEventListener('click', () => select(current + 1, !isPaused));
-
-// ---------- Mini player: keeps the music in reach once Music is closed or scrolled past ----------
-const mini = {
-  el: document.getElementById('mini'),
-  art: document.querySelector('#mini-open img'),
-  open: document.getElementById('mini-open'),
-  title: document.getElementById('mini-title'),
-  by: document.getElementById('mini-by'),
-  play: document.getElementById('mini-play'),
-  prev: document.getElementById('mini-prev'),
-  next: document.getElementById('mini-next'),
-  close: document.getElementById('mini-close'),
-  bar: document.getElementById('mini-bar'),
-};
-let deckInView = false;
-
-function paintMini() {
-  const entry = entries[current];
-  if (!entry || !mini.el) return;
-  mini.title.textContent = entry.title || TYPE_LABELS[entry.type];
-  mini.by.textContent = [entry.by, kindLabel(entry)].filter(Boolean).join(' · ');
-  if (entry.image) mini.art.src = entry.image;
-  else mini.art.removeAttribute('src');
+// ---------- Network (network.json): just the names ----------
+async function loadNetwork() {
+  const list = document.getElementById('network-list');
+  if (!list) return;
+  try {
+    const people = (await loadJSON('assets/data/network.json'))
+      .map((p) => (typeof p === 'string' ? { url: p } : p))
+      .filter((p) => p && p.url);
+    list.innerHTML = people.map((p) => `
+      <li><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.name || domain(p.url))}</a></li>`).join('')
+      || '<li class="info">Coming soon.</li>';
+  } catch (error) {
+    showError(list, 'the network', error);
+  }
 }
 
-function updateMini() {
-  if (!mini.el) return;
-  const fold = document.getElementById('playlists');
-  const up = hasPlayed && !(fold.classList.contains('is-open') && deckInView);
-  mini.el.classList.toggle('is-up', up);
-  mini.el.setAttribute('aria-hidden', String(!up));
-  mini.el.querySelectorAll('button').forEach((btn) => { btn.tabIndex = up ? 0 : -1; });
+// ---------- Socials (socials.json): the ones with a url ----------
+async function loadSocials() {
+  try {
+    const socials = await loadJSON('assets/data/socials.json');
+    const live = socials.filter((s) => s.url);
+    document.querySelectorAll('[data-socials]').forEach((ul) => {
+      ul.innerHTML = live.map((s) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)}</a></li>`).join('');
+    });
+    return socials;
+  } catch (error) {
+    console.error('Error loading socials:', error);
+    return [];
+  }
 }
-
-if (mini.el) {
-  new IntersectionObserver(([entry]) => {
-    deckInView = entry.isIntersecting;
-    updateMini();
-  }, { threshold: 0.2 }).observe(document.getElementById('deck'));
-  window.addEventListener('foldchange', updateMini);
-
-  mini.play.addEventListener('click', () => controller?.togglePlay());
-  mini.prev.addEventListener('click', () => select(current - 1, !isPaused));
-  mini.next.addEventListener('click', () => select(current + 1, !isPaused));
-  mini.open.addEventListener('click', () => {
-    openFold('playlists', true);
-    history.replaceState(null, '', '#playlists');
-  });
-  // stop for good: pause and put the player away until something is played again
-  mini.close.addEventListener('click', () => {
-    controller?.pause();
-    hasPlayed = false;
-    updateMini();
-  });
-}
-
-// Recommend a song: opens the visitor's email, addressed to the form's data-to
-const recommendForm = document.getElementById('recommend');
-
-recommendForm?.addEventListener('submit', (e) => {
-  e.preventDefault();
-  const to = recommendForm.dataset.to;
-  if (!to) return;
-  const f = new FormData(recommendForm);
-  const subject = `Song for you: ${f.get('song')} by ${f.get('artist')}`;
-  const body = [
-    `Song: ${f.get('song')}`,
-    `Artist: ${f.get('artist')}`,
-    f.get('why') ? `Why: ${f.get('why')}` : '',
-    '',
-    f.get('name') ? `From ${f.get('name')}` : '',
-  ].filter((line, i, all) => line || (i > 0 && all[i - 1])).join('\n');
-  window.location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-});
 
 // ---------- Addis Ababa now: the time (and the Ethiopian clock) and the weather ----------
 const ADDIS = { tz: 'Africa/Addis_Ababa', lat: 9.03, lon: 38.74 };
 const nowTime = document.getElementById('now-time');
-const nowAmpm = document.getElementById('now-ampm');
 const nowEth = document.getElementById('now-eth');
-const nowWeather = document.getElementById('now-weather');
-const nowTemp = document.getElementById('now-temp');
+const nowWx = document.getElementById('now-wx');
 
 function addisClock() {
   const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', {
     timeZone: ADDIS.tz, hour: 'numeric', minute: '2-digit', hourCycle: 'h23',
   }).formatToParts(new Date()).map((p) => [p.type, p.value]));
-  const h = Number(parts.hour);
+  const h = Number(parts.hour) % 24;
   const m = parts.minute;
-  nowTime.textContent = `${h % 12 || 12}:${m}`;
-  nowAmpm.textContent = h < 12 ? 'AM' : 'PM';
+  nowTime.textContent = `${h % 12 || 12}:${m} ${h < 12 ? 'AM' : 'PM'}`;
   // the Ethiopian clock starts the day at sunrise: 7 AM is 1 o'clock
   nowEth.textContent = `${(h + 18) % 12 || 12}:${m} in Ethiopian time`;
 }
@@ -786,8 +321,7 @@ async function addisWeather() {
       return;
     }
   }
-  nowTemp.textContent = `${w.temp}°C`;
-  nowWeather.textContent = weatherWords(w.code);
+  nowWx.textContent = ` · ${w.temp}°C, ${weatherWords(w.code)}`;
 }
 
 if (nowTime) {
@@ -797,9 +331,10 @@ if (nowTime) {
   setInterval(addisWeather, 15 * 60 * 1000);
 }
 
-// Load data on initialization, then open a fold named in the address (#playlists etc.)
+const yearEl = document.getElementById('year');
+if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+// ---------- Load everything ----------
 document.addEventListener('DOMContentLoaded', async () => {
-  await Promise.all([loadExperience(), loadPublications(), loadPlaylists(), loadNetwork(), loadSocials()]);
-  const id = location.hash.slice(1);
-  if (id && folds.some((f) => f.id === id)) openFold(id, true);
+  await Promise.all([loadExperience(), loadPublications(), loadMusic(), loadNetwork(), loadSocials()]);
 });

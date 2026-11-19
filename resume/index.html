@@ -104,8 +104,9 @@
                 box-shadow: none;
             }
 
+            /* the screen buttons never go on paper (!important: their own rule comes later) */
             .actions {
-                display: none;
+                display: none !important;
             }
         }
 
@@ -380,28 +381,14 @@
 
         <section class="sec">
             <h2 class="label"><i></i>Profile</h2>
-            <p class="lead">I edit <b>UGC ads</b> for skincare, hair and beauty brands. I came to editing from
-                <b>programming</b> and <b>writing</b>, so I cut fast, check every frame against the script, and build
-                my own tools when the routine needs one. On the side I write book reviews and short philosophy, make
-                <b>music</b>, and build software I actually use.</p>
+            <p class="lead">I build <b>software</b> I actually use, like Katana and Bowels, write book reviews and short
+                <b>philosophy</b> on Tea Leaves &amp; Thoughts, and make <b>music</b>, with two albums out on Bandcamp.
+                I like linking different ideas together.</p>
         </section>
 
         <section class="sec">
             <h2 class="label"><i></i>Work</h2>
             <div>
-                <div class="row now">
-                    <span class="when">May 2026 – Now</span>
-                    <div>
-                        <h3>UGC Video Editor</h3>
-                        <p class="at">Skincare, hair &amp; beauty ads · remote</p>
-                        <ul>
-                            <li>Cut talking-head, b-roll and AI-generated drama ads in DaVinci Resolve for TikTok and
-                                Meta, each delivered in three hook versions.</li>
-                            <li>Every version passes a Frame.io review and my own check: stray frames, subtitles
-                                against the script and the voice, faces and text inside the safe zones.</li>
-                        </ul>
-                    </div>
-                </div>
                 <div class="row">
                     <span class="when">2025 – May 2026</span>
                     <div>
@@ -432,21 +419,22 @@
             <h2 class="label"><i></i>Projects</h2>
             <div>
                 <div class="row">
-                    <span class="when">v3.1 · 2026</span>
+                    <span class="when">v1.0 · 2026</span>
                     <div>
-                        <h3>Bowels</h3>
-                        <p class="at">Kotlin · Jetpack Compose · Wear OS</p>
-                        <p>A digestive-health tracker with a Wear OS companion. Its timing prediction, backtested on
-                            real history, lands within an hour of the actual time 59% of the time.</p>
+                        <h3>Katana</h3>
+                        <p class="at">Kotlin · Jetpack Compose · Readium · dawitsh.dev/Katana</p>
+                        <p>An Android e-reader for self-hosted book servers, built on yabai and tuned to run on a
+                            Fire 7: highlights, a dictionary with my own word list, Markdown export, and sync with
+                            Grimmory.</p>
                     </div>
                 </div>
                 <div class="row">
-                    <span class="when">2026</span>
+                    <span class="when">v3.2 · 2026</span>
                     <div>
-                        <h3>251 Radio Studio</h3>
-                        <p class="at">TypeScript · Next.js · Web Audio</p>
-                        <p>Audio editing tools for a friend's radio platform (split, loop, transitions, effects,
-                            sample pads), merged upstream, plus a live DJ room with two decks and a full mixer.</p>
+                        <h3>Bowels</h3>
+                        <p class="at">Kotlin · Jetpack Compose · Wear OS · dawitsh.dev/Bowels</p>
+                        <p>A digestive-health tracker with a Wear OS companion. Its timing prediction, backtested on
+                            real history, lands within an hour of the actual time 59% of the time.</p>
                     </div>
                 </div>
                 <div class="row">
@@ -505,12 +493,12 @@
             <h2 class="label"><i></i>Toolkit</h2>
             <div class="cols">
                 <div class="kit">
-                    <h3>Editing</h3>
-                    <p>DaVinci Resolve, Premiere Pro, CapCut, Frame.io, Figma</p>
+                    <h3>Music &amp; audio</h3>
+                    <p>Ableton&nbsp;Live, DaVinci&nbsp;Resolve (Fairlight), Surge&nbsp;XT, Strudel, Pedalboard, ElevenLabs</p>
                 </div>
                 <div class="kit">
                     <h3>Code</h3>
-                    <p>Kotlin, TypeScript, React, Next.js, Python, C/C++, LaTeX</p>
+                    <p>Kotlin, Jetpack Compose, TypeScript, React, Next.js, Python, C/C++, LaTeX</p>
                 </div>
             </div>
         </section>

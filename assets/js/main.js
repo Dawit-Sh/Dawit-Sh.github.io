@@ -62,14 +62,38 @@ if (themeBtn) paintThemeButton();
 const tocLinks = [...document.querySelectorAll('.toc a')];
 const sections = tocLinks.map((a) => document.querySelector(a.getAttribute('href'))).filter(Boolean);
 
-if (sections.length && 'IntersectionObserver' in window) {
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (!entry.isIntersecting) return;
-      tocLinks.forEach((a) => a.classList.toggle('on', a.getAttribute('href') === `#${entry.target.id}`));
-    });
-  }, { rootMargin: '-35% 0px -60% 0px' });
-  sections.forEach((s) => io.observe(s));
+// The section you're reading is the last one whose top has passed a marker line. The line moves
+// down the window as you scroll: near the top of the window at the top of the page, near the
+// bottom at the end. So About wins at the top even though it's short, and the last sections win
+// at the bottom even when they're too short to scroll up the screen (that was Network staying on
+// Music on a tall window, 2026-11-19).
+function currentSection() {
+  const max = document.documentElement.scrollHeight - window.innerHeight;
+  const p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+  const line = window.innerHeight * (0.1 + 0.8 * p);
+  let current = sections[0];
+  sections.forEach((s) => { if (s.getBoundingClientRect().top <= line) current = s; });
+  return current;
+}
+
+let tocQueued = false;
+function updateToc() {
+  tocQueued = false;
+  const current = currentSection();
+  tocLinks.forEach((a) => a.classList.toggle('on', a.getAttribute('href') === `#${current.id}`));
+}
+function queueToc() {
+  if (tocQueued) return;
+  tocQueued = true;
+  requestAnimationFrame(updateToc);
+}
+
+if (sections.length) {
+  window.addEventListener('scroll', queueToc, { passive: true });
+  window.addEventListener('resize', queueToc);
+  // the lists load after the first paint and change the page's height; recheck once they're in
+  window.addEventListener('load', queueToc);
+  updateToc();
 }
 
 // ---------- Work (assets/data/experience.json) ----------
@@ -177,6 +201,7 @@ function setOpen(el, open) {
   head.setAttribute('aria-expanded', String(open));
   head.querySelector('.tog-label').textContent = open ? 'Hide tracklist' : 'Tracklist';
   el.querySelector('.tl-wrap').hidden = !open;
+  queueToc();   // a tracklist changes the page's height
 }
 
 // Bandcamp's own player plays the album (or the picked track); only one is ever on the page
@@ -337,4 +362,5 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
 // ---------- Load everything ----------
 document.addEventListener('DOMContentLoaded', async () => {
   await Promise.all([loadExperience(), loadPublications(), loadMusic(), loadNetwork(), loadSocials()]);
+  queueToc();
 });
